@@ -108,7 +108,6 @@ class TopicsWidgetState extends State<TopicsWidget>
                     MaterialPageRoute(builder: (context) => loginWidget),
                   );
                   //await service.login();
-                  
                 }),
             title: new Text("EksiReader"),
             actions: <Widget>[
@@ -141,7 +140,31 @@ class TopicsContentWidget extends StatefulWidget {
 class TopicsContentWidgetState extends State<TopicsContentWidget> {
   @override
   Widget build(BuildContext context) {
-    return getListView();
+    var listView = getListView();
+    return new Container(
+      padding: EdgeInsets.only(bottom: 20.0),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+          Expanded(
+            child: SizedBox(child: listView),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              new Text(" "),
+              new IconButton(icon: Icon(Icons.first_page), onPressed: () {}, iconSize: 40),
+              new IconButton(icon: Icon(Icons.keyboard_arrow_left), onPressed: () {}, iconSize: 40),
+              new Text('Page'),
+              new IconButton(icon: Icon(Icons.keyboard_arrow_right), onPressed: () {}, iconSize: 40),
+              new IconButton(icon: Icon(Icons.last_page), onPressed: () {}, iconSize: 40),
+              new Text(" "),
+            ],
+          ),
+          Row(
+          )
+        ]));
   }
 
   ListView getListView() {
@@ -157,7 +180,13 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: topic.detail != null ? <Widget>[Text(topic.detail, style: TextStyle(color: Colors.green)), Text(topic.title)] : <Widget>[Text(topic.title)],
+                  children: topic.detail != null
+                      ? <Widget>[
+                          Text(topic.detail,
+                              style: TextStyle(color: Colors.green)),
+                          Text(topic.title)
+                        ]
+                      : <Widget>[Text(topic.title)],
                 ),
               ),
               Row(
