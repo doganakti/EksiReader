@@ -25,6 +25,7 @@ class TopicsWidgetState extends State<TopicsWidget>
 
   Future<Null> loadData(String path) async {
     await new Future.delayed(new Duration(seconds: 1));
+    var login = await service.login();
     var sectionList = await service.getSectionList();
     for (var section in sectionList) {
       section.topicList = await service.getTopicList(path: section.path);

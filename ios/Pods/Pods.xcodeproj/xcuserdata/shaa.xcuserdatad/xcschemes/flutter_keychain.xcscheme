@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1A7C466E412A8200B82FB32C183E7E8A"
+               BuildableName = "libflutter_keychain.a"
                BlueprintName = "flutter_keychain"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libflutter_keychain.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

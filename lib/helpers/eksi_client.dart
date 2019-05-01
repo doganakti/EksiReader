@@ -13,8 +13,7 @@ import 'package:requests/requests.dart';
 
 class EksiClient {
   HttpClient _client = new HttpClient();
-  Map<String, String> _cookies = new Map<String, String>();
-  CookieJar _cookieJar = new CookieJar();
+  List<Cookie> _cookies = new List();
 
   var _headers = {
     'user-agent':
@@ -24,74 +23,46 @@ class EksiClient {
 
   EksiClient() {
     var flutterWebviewPlugin = FlutterWebviewPlugin();
-    
+
     flutterWebviewPlugin.onUrlChanged.listen((String url) async {
       var username = await flutterWebviewPlugin
           .evalJavascript("document.getElementById('username').value");
       var password = await flutterWebviewPlugin
           .evalJavascript("document.getElementById('password').value");
-      if (true) {
-        // print('username: ' + username);
-        // print('password: ' + password);
-        // await FlutterKeychain.put(key: "username", value: username);
-        // await FlutterKeychain.put(key: "password", value: password);
-        _cookies = await flutterWebviewPlugin.getCookies();
-        //print(_cookies);
-        var cookieString = '';
-        List<Cookie> cookies = new List<Cookie>();
-        bool contains = _cookies.keys.contains('ASP.NET_SessionId');
-        for (var key in _cookies.keys) {
-          try {
-            var value = _cookies[key];
-            print(key);
-            var cookiePart =key.trim() + '=' + value.trim() + '; ';
-            cookieString = cookieString  + cookiePart;
-          } catch (e) {
-            print(e);
-          }
-        }
-        if (cookieString.length > 1) {
-          cookieString = cookieString.substring(0, cookieString.length - 2);
-        }
-        //print(cookieString);
-
-        // _cookieJar.saveFromResponse(
-        //     Uri.parse("https://eksisozluk.com"), cookies);
+      if (username != '(null)' && username != '') {
+        print('username: ' + username);
+        print('password: ' + password);
+        await FlutterKeychain.put(key: "username", value: username);
+        await FlutterKeychain.put(key: "password", value: password);
       }
     });
   }
 
   Future<Document> get(path) async {
-    // var response = await _client.get(_url + path, headers: _headers);
-    // var document = parse(response.body);
-    // return document;
-    // var response =
-    //     await _client.get(_url + path, options: new Options(headers: _headers));
-    // var document = parse(response.data);
-    // var jar = _client.interceptors.first;
-    // print(jar);
-
-    // return document;
-
-    // HttpClient client = new HttpClient();
-    // HttpClientRequest clientRequest = await client.getUrl(Uri.parse(_url + path));
-    // if (_cookies != null && _cookies.length > 0) {
-    //   for (var key in _cookies.keys) {
-    //     var value = _cookies[key];
-    //     clientRequest.cookies.add(Cookie(key.trim(), value.trim()));
-    //   }
-    // }
-    // clientRequest.headers.add(HttpHeaders.userAgentHeader, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
-    // HttpClientResponse clientResponse = await clientRequest.close();
-    // var document = new Document();
-    // clientResponse.transform(utf8.decoder).listen((body) {
-    //   document = parse(body);
-    //   print(document.text);
-    //   return document;
-    // });
-    String body = await Requests.get(_url + path, headers: _headers);
-    var document = parse(body);
+    var client = new Dio();
+    var response =
+        await client.get(_url + path, options: Options(headers: _headers));
+    print(response.data);
+    var setCookies = response.headers['set-cookie'];
+    setHeaders(setCookies);
+    print(_headers);
+    var document = parse(response.data);
     return document;
+  }
+
+  void setHeaders(List<String> rawCookies) {
+    String cookieString = '';
+    for (var rawCookie in rawCookies) {
+      int index = rawCookie.indexOf(';');
+      cookieString = cookieString +
+          ((index == -1) ? rawCookie : rawCookie.substring(0, index)) +
+          ';';
+    }
+    _headers = {
+      'user-agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+      'cookie': cookieString
+    };
   }
 
   Future<User> getUser() async {
@@ -116,27 +87,40 @@ class EksiClient {
   Future<bool> login() async {
     var user = await getUser();
     var token = await getToken();
-    print(token);
-    Map<String, String> jsonMap = {
+    var formData = {
       '__RequestVerificationToken': token,
       'ReturnUrl': 'https://eksisozluk.com/',
       'UserName': user.login,
       'Password': user.password,
       'RememberMe': 'true'
     };
-    var response = await post(Uri.parse(_url + '/giris'),
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
-        },
-        body: json.encode(jsonMap),
-        encoding: Encoding.getByName("utf-8"));
-    print(response.body);
-    return response != null;
-    // var body2 = json.encode(body);
-    // var result = await Requests.post(_url + '/giris', headers: {'user-agent': _headers['user-agent'], "content-type": "application/x-www-form-urlencoded"}, body: body2);
-    // print(result);
-    // return result !=null;
+    var dioClient = new Dio();
+    var response = await dioClient.post("https://eksisozluk.com/giris",
+        data: formData,
+        options: Options(
+            headers: _headers,
+            followRedirects: false,
+            validateStatus: (int status) {
+              print("status code = $status");
+              return status < 500;
+            },
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    var setCookies = response.headers['set-cookie'];
+    setHeaders(setCookies);
+    print(_headers);
+
+    await get('/basliklar/gundem');
+
+    return true;
+  }
+
+  Future<dynamic> readResponse(HttpClientResponse response) {
+    var completer = new Completer();
+    var contents = new StringBuffer();
+    response.transform(utf8.decoder).listen((String data) {
+      contents.write(data);
+    }, onDone: () => completer.complete(contents.toString()));
+    return completer.future;
   }
 }
