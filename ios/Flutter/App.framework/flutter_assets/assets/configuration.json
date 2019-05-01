@@ -10,8 +10,13 @@
             "login": false
         },
         {
-            "title": "Takip",
-            "path": "/basliklar/bugun/1",
+            "title": "Takip - Entry",
+            "path": "/basliklar/takipentry",
+            "login": false
+        },
+        {
+            "title": "Takip - Fav",
+            "path": "/basliklar/takipfav",
             "login": false
         },
         {
@@ -21,17 +26,17 @@
         },
         {
             "title": "Son",
-            "path": "/basliklar/bugun/1",
+            "path": "/basliklar/son",
             "login": false
         },
         {
             "title": "Çaylaklar",
-            "path": "/basliklar/bugun/1",
+            "path": "/basliklar/caylaklar",
             "login": false
         },
         {
             "title": "Kenar",
-            "path": "/basliklar/bugun/1",
+            "path": "/basliklar/kenar",
             "login": false
         }
     ]

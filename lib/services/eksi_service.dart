@@ -6,13 +6,9 @@ import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/services/login_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_keychain/flutter_keychain.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class EksiService {
-  String _url = "https://eksisozluk.com";
   EksiClient _client = new EksiClient();
-  LoginService _loginService = new LoginService();
 
   EksiService() {
     
@@ -32,7 +28,7 @@ class EksiService {
 
   Future<List<Topic>> getTopicList({String path: '/basliklar/gundem'}) async {
     List<Topic> topicList = new List<Topic>();
-    var document = await _client.get(path);
+    var document = await _client.get(path: path);
     var content = document.querySelector("#content");
     var elementList = content.querySelectorAll('ul.topic-list > li');
     for (var element in elementList) {
@@ -44,11 +40,25 @@ class EksiService {
             var url = urlElement.attributes['href'];
             var badgeElement = element.querySelector('small');
             var badge = '';
+            var detailElements = element.getElementsByClassName("detail");
+            var detail = "";
+            if (detailElements.length > 0) {
+              detail = detailElements[0].text;
+              var index = text.lastIndexOf(detail);
+              print(detail.length);
+              print(index);
+              print(text.length);
+              text = text.substring(0, index);
+            }
             if (badgeElement != null) {
               badge = badgeElement.text;
               text = text.substring(0, text.length - badge.length).trim();
+              
+              if(detail != "") {
+                
+              }
             }
-            var topic = new Topic(text, url, badge);
+            var topic = new Topic(text, detail.length > 0 ? detail : null, url, badge);
             topicList.add(topic);
           }
         }

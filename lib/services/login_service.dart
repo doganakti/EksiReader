@@ -26,7 +26,7 @@ class LoginService {
   }
 
   Future<String> getToken() async {
-    var document = await _client.get('/giris');
+    var document = await _client.get(path: '/giris', cacheCookies: true);
     var content = document.querySelector("#content-body");
     var formContainer = content.querySelector(".form-container");
     var tokenInput = formContainer.querySelector("input");
@@ -53,16 +53,6 @@ class LoginService {
           'user-agent':
               'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
         }, contentType: contentType));
-
-    // var response = await post(Uri.parse('https://eksisozluk.com/giris'),
-    // headers: {
-    //   'accept': "application/json",
-    //   "content-type": "application/x-www-form-urlencoded",
-    //   'user-agent':
-    //     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
-    // },
-    // body: json.encode(body),
-    // encoding: Encoding.getByName("utf-8"));
     print(response);
     return response != null;
   }

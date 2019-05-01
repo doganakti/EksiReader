@@ -157,7 +157,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
               Flexible(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[Text(topic.title)],
+                  children: topic.detail != null ? <Widget>[Text(topic.detail, style: TextStyle(color: Colors.green)), Text(topic.title)] : <Widget>[Text(topic.title)],
                 ),
               ),
               Row(
