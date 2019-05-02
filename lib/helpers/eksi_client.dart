@@ -35,11 +35,9 @@ class EksiClient {
       {String path: '/basliklar/gundem', bool cacheCookies: false}) async {
     var client = new Dio();
     var response = await client.get(_url + path, options: Options(headers: _headers));
-    print(response.data);
     if (cacheCookies) {
       var setCookies = response.headers['set-cookie'];
       setHeaders(setCookies);
-      print(_headers);
     }
     var document = parse(response.data);
     return document;

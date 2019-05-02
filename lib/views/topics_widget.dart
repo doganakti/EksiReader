@@ -72,7 +72,7 @@ class TopicsWidgetState extends State<TopicsWidget>
         appBar: new AppBar(
           leading: IconButton(
               icon: Icon(Icons.account_circle),
-              onPressed: () {
+              onPressed: () async {
                 print("hey");
               }),
           title: new Text("EksiReader"),
@@ -113,8 +113,9 @@ class TopicsWidgetState extends State<TopicsWidget>
             actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.settings),
-                  onPressed: () {
+                  onPressed: () async {
                     print("hey");
+                    var entryList = await service.getEntryList(null);
                   })
             ],
             bottom: getTabBar()),
