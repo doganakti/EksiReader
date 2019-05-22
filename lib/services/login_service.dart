@@ -5,7 +5,6 @@ import 'package:eksi_reader/helpers/eksi_client.dart';
 import 'package:eksi_reader/models/user.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart';
 
 class LoginService {
   String _url = "https://eksisozluk.com";

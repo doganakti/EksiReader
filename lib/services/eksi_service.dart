@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:eksi_reader/helpers/eksi_client.dart';
+import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/configuration.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
@@ -11,9 +12,13 @@ import 'package:eksi_reader/services/login_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 class EksiService {
+  static final EksiService _instance = EksiService._internal();
+  factory EksiService() => _instance;
   EksiClient _client = new EksiClient();
 
-  EksiService() {}
+  EksiService._internal() {
+    // init things inside this
+  }
 
   Future<Configuration> getConfiguration() async {
     var json = await rootBundle.loadString('assets/configuration.json');
@@ -67,12 +72,21 @@ class EksiService {
   }
 
   Future<List<Entry>> getEntryList(String path) async {
-    path = '/3-mayis-2019-jti-sigara-zammi--6025436?a=popular';
     List<Entry> entryList = new List<Entry>();
     var document = await _client.get(path: path);
     var content = document.getElementById("content-body");
+    print(content.innerHtml);
     var rawEntryList = content.getElementsByClassName('content');
-    for (var rawEntry in rawEntryList) {
+    var dateList = document.getElementsByClassName("entry-date");
+    var authorList = document.getElementsByClassName("entry-author");
+    var entryItemList = document.getElementById("entry-item-list");
+    var entryIdList = entryItemList.getElementsByTagName("li");
+    for (int i = 0; i < rawEntryList.length; i++) {
+      var rawEntry = rawEntryList[i];
+      var date = dateList[i].text;
+      var author = new Author(name: authorList[i].text, path: authorList[0].attributes['href']);
+      var id = entryIdList[i].attributes['data-id'];
+      var favCount = entryIdList[i].attributes['data-favorite-count'];
       var entryContentList = new List<EntryContent>();
       for (var child in rawEntry.nodes) {
         var entryContent = new EntryContent();
@@ -91,16 +105,14 @@ class EksiService {
           entryContent.text = entryContent.text.replaceAll("\n ", "");
           entryContent.text = entryContent.text.replaceAll("\n", "");
         }
-        // print(child.attributes['href']);
-        // print(child.text);
         entryContentList.add(entryContent);
       }
-      var entry = new Entry(entryContentList, null, null, null);
+      var entry = new Entry(id, entryContentList, author, date, favCount);
       entryList.add(entry);
     }
     for (var entry in entryList) {
       var res = entry.resultString();
-      print(res);
+      //print(res);
     }
     return entryList;
   }

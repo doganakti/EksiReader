@@ -1,12 +1,14 @@
+import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/entry_content.dart';
 
 class Entry {
+  String id;
   List<EntryContent> contentList;
-  String author;
-  String authorPath;
+  Author author;
   String date;
+  String favCount;
 
-  Entry(this.contentList, this.author, this.authorPath, this.date);
+  Entry(this.id, this.contentList, this.author, this.date, this.favCount);
 
   String resultString() {
     String string = '';
