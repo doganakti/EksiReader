@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 class PagerWidget extends StatefulWidget {
   Pager pager;
   Function(String) onPath;
+  Function(int) onPage;
 
-  PagerWidget(this.pager, this.onPath);
+  PagerWidget(this.pager, this.onPath, this.onPage);
   @override
   State<StatefulWidget> createState() => PagerWidgetState();
 }
@@ -18,26 +19,52 @@ class PagerWidgetState extends State<PagerWidget> {
     print(widget.pager.page);
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(" "),
           IconButton(
-              icon: Icon(Icons.first_page), onPressed: () {}, iconSize: 40),
+              icon: Icon(Icons.first_page),
+              onPressed: () {
+                widget.onPage(1);
+              },
+              iconSize: 40),
           IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
-              onPressed: () {},
+              onPressed: () {
+                if (widget.pager.page > 1) {
+                  widget.onPage(widget.pager.page - 1);
+                }
+              },
               iconSize: 40),
-          widget.pager.quickIndex != null
+          widget.pager.quickIndexPath != null
               ? FlatButton(
-                  child: Text(widget.pager.quickIndexText),
+                  child: SizedBox(
+                    width: 100,
+                    child: Center(
+                      child: Text(widget.pager.quickIndexText,
+                          textAlign: TextAlign.center),
+                    ),
+                  ),
                   textColor: Colors.white,
-                  onPressed: () => { widget.onPath(widget.pager.quickIndex) }
-                  )
-              : Text(widget.pager.page.toString()),
+                  onPressed: () => {widget.onPath(widget.pager.quickIndexPath)})
+              : SizedBox(
+                  width: 134,
+                  child: Center(
+                    child: Text(widget.pager.page.toString() +
+                        ' / ' +
+                        widget.pager.pageCount.toString()),
+                  ),
+                ),
           IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
-              onPressed: () {},
+              onPressed: () {
+                if (widget.pager.page == null) {
+                  widget.onPage(2);
+                } else if (widget.pager.page < widget.pager.pageCount) {
+                  widget.onPage(widget.pager.page + 1);
+                }
+              },
               iconSize: 40),
           IconButton(
               icon: Icon(Icons.last_page), onPressed: () {}, iconSize: 40),

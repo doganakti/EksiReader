@@ -1,3 +1,4 @@
+import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/services/login_service.dart';
@@ -148,7 +149,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
   Widget build(BuildContext context) {
     var listView = getListView();
     print('here' + widget.section.pager.page.toString());
-    var pagerWidget = PagerWidget(widget.section.pager, callback);
+    var pagerWidget = PagerWidget(widget.section.pager, handleOnMore, handleOnPage);
     return new Container(
         padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
@@ -163,14 +164,23 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
             ]));
   }
 
-  callback(path) async {
+  handleOnMore(path) async {
     var result = await widget.service.getTopicList(path: path);
     widget.section.topicList = result.itemList;
     widget.section.pager = result.pager;
     print(path);
     setState((){
     });
-    
+  }
+
+  handleOnPage(page) async {
+    var path = EksiUri.getPathForPage(widget.section.path, page);
+    var result = await widget.service.getTopicList(path: path);
+    widget.section.topicList = result.itemList;
+    widget.section.pager = result.pager;
+    print(path);
+    setState((){
+    });
   }
 
   ListView getListView() {

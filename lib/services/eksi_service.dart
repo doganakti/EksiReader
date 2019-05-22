@@ -50,7 +50,7 @@ class EksiService {
       {
         var quickIndexPath = quickIndexContent[0].attributes['href'];
         var quickIndexTitle = quickIndexContent[0].text;
-        pager.quickIndex = quickIndexPath;
+        pager.quickIndexPath = quickIndexPath;
         pager.quickIndexText = quickIndexTitle.replaceAll(' ...', '');
       }
     }
