@@ -6,8 +6,10 @@ import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/configuration.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
+import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/topic.dart';
+import 'package:eksi_reader/results/result.dart';
 import 'package:eksi_reader/services/login_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -32,11 +34,33 @@ class EksiService {
     return configuration.sections;
   }
 
-  Future<List<Topic>> getTopicList({String path: '/basliklar/gundem'}) async {
+  Future<Result> getTopicList({String path: '/basliklar/gundem'}) async {
     List<Topic> topicList = new List<Topic>();
     var document = await _client.get(path: path);
-    var content = document.querySelector("#content");
+    var content = document.querySelector('#content');
     var elementList = content.querySelectorAll('ul.topic-list > li');
+    var quickIndexContainer = content.getElementsByClassName('full-index-continue-link-container');
+    var pagerContainer = content.getElementsByClassName('pager');
+    var pager = new Pager();
+    if(quickIndexContainer.length > 0)
+    {
+      print('index exists');
+      var quickIndexContent = quickIndexContainer[0].getElementsByTagName('a');
+      if (quickIndexContent.length > 0)
+      {
+        var quickIndexPath = quickIndexContent[0].attributes['href'];
+        var quickIndexTitle = quickIndexContent[0].text;
+        pager.quickIndex = quickIndexPath;
+        pager.quickIndexText = quickIndexTitle.replaceAll(' ...', '');
+      }
+    }
+    else if (pagerContainer.length > 0)
+    {
+      print('page exists');
+      pager.pageCount = int.parse(pagerContainer[0].attributes['data-pagecount']);
+      pager.page = int.parse(pagerContainer[0].attributes['data-currentpage']);
+    }
+    
     for (var element in elementList) {
       try {
         if (element.text != null) {
@@ -68,7 +92,8 @@ class EksiService {
         print(error);
       }
     }
-    return topicList;
+    var result = new Result<Topic>(item: null, itemList: topicList, pager: pager);
+    return result;
   }
 
   Future<List<Entry>> getEntryList(String path) async {
@@ -109,10 +134,6 @@ class EksiService {
       }
       var entry = new Entry(id, entryContentList, author, date, favCount);
       entryList.add(entry);
-    }
-    for (var entry in entryList) {
-      var res = entry.resultString();
-      //print(res);
     }
     return entryList;
   }

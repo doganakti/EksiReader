@@ -1,3 +1,4 @@
+import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/segment.dart';
 import 'package:eksi_reader/models/topic.dart';
 
@@ -7,6 +8,7 @@ class Section {
   bool login;
   List<Segment> segments;
   List<Topic> topicList;
+  Pager pager;
 
   Section({this.title, this.path, this.login, this.segments});
 

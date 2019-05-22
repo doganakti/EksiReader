@@ -3,6 +3,7 @@ import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/services/login_service.dart';
 import 'package:eksi_reader/views/login_widget.dart';
 import 'package:eksi_reader/views/entries_widget.dart';
+import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/material.dart';
 
 class TopicsWidget extends StatefulWidget {
@@ -16,7 +17,6 @@ class TopicsWidgetState extends State<TopicsWidget>
   var service = new EksiService();
   TabController controller;
   LoginWidget loginWidget;
-  LoginService loginService = new LoginService();
 
   @override
   void initState() {
@@ -26,10 +26,12 @@ class TopicsWidgetState extends State<TopicsWidget>
 
   Future<Null> loadData(String path) async {
     await new Future.delayed(new Duration(seconds: 1));
-    var login = await service.login();
+    await service.login();
     var sectionList = await service.getSectionList();
     for (var section in sectionList) {
-      section.topicList = await service.getTopicList(path: section.path);
+      var result = await service.getTopicList(path: section.path);
+      section.topicList = result.itemList;
+      section.pager = result.pager;
     }
     controller = new TabController(length: sectionList.length, vsync: this);
     setState(() {
@@ -58,7 +60,9 @@ class TopicsWidgetState extends State<TopicsWidget>
     var topicsContentWidget = TopicsContentWidget(section);
     return RefreshIndicator(
         onRefresh: () async {
-          section.topicList = await service.getTopicList(path: section.path);
+          var result = await service.getTopicList(path: section.path);
+          section.topicList = result.itemList;
+          section.pager = result.pager;
           setState(() {
             topicsContentWidget.section = section;
           });
@@ -132,10 +136,10 @@ class TopicsWidgetState extends State<TopicsWidget>
 class TopicsContentWidget extends StatefulWidget {
   Section section;
   TopicsContentWidget(this.section);
-
+  var service = new EksiService();
   @override
   TopicsContentWidgetState createState() {
-    return new TopicsContentWidgetState();
+    return TopicsContentWidgetState();
   }
 }
 
@@ -143,6 +147,8 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
   @override
   Widget build(BuildContext context) {
     var listView = getListView();
+    print('here' + widget.section.pager.page.toString());
+    var pagerWidget = PagerWidget(widget.section.pager, callback);
     return new Container(
         padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
@@ -152,32 +158,19 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
               Expanded(
                 child: SizedBox(child: listView),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  new Text(" "),
-                  new IconButton(
-                      icon: Icon(Icons.first_page),
-                      onPressed: () {},
-                      iconSize: 40),
-                  new IconButton(
-                      icon: Icon(Icons.keyboard_arrow_left),
-                      onPressed: () {},
-                      iconSize: 40),
-                  new Text('Page'),
-                  new IconButton(
-                      icon: Icon(Icons.keyboard_arrow_right),
-                      onPressed: () {},
-                      iconSize: 40),
-                  new IconButton(
-                      icon: Icon(Icons.last_page),
-                      onPressed: () {},
-                      iconSize: 40),
-                  new Text(" "),
-                ],
-              ),
+              pagerWidget,
               Row()
             ]));
+  }
+
+  callback(path) async {
+    var result = await widget.service.getTopicList(path: path);
+    widget.section.topicList = result.itemList;
+    widget.section.pager = result.pager;
+    print(path);
+    setState((){
+    });
+    
   }
 
   ListView getListView() {
