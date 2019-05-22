@@ -148,7 +148,6 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
   @override
   Widget build(BuildContext context) {
     var listView = getListView();
-    print('here' + widget.section.pager.page.toString());
     var pagerWidget = PagerWidget(widget.section.pager, handleOnMore, handleOnPage);
     return new Container(
         padding: EdgeInsets.only(bottom: 20.0),
@@ -168,7 +167,6 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
     var result = await widget.service.getTopicList(path: path);
     widget.section.topicList = result.itemList;
     widget.section.pager = result.pager;
-    print(path);
     setState((){
     });
   }
@@ -178,7 +176,6 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
     var result = await widget.service.getTopicList(path: path);
     widget.section.topicList = result.itemList;
     widget.section.pager = result.pager;
-    print(path);
     setState((){
     });
   }
@@ -212,7 +209,6 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
             ],
           ),
           onTap: () {
-            print(index);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => EntriesWidget(topic)),

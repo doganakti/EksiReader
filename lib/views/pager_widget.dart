@@ -16,7 +16,6 @@ class PagerWidgetState extends State<PagerWidget> {
   PagerWidgetState();
   @override
   Widget build(BuildContext context) {
-    print(widget.pager.page);
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

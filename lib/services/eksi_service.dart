@@ -12,6 +12,7 @@ import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/results/result.dart';
 import 'package:eksi_reader/services/login_service.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:html/dom.dart';
 
 class EksiService {
   static final EksiService _instance = EksiService._internal();
@@ -37,30 +38,8 @@ class EksiService {
   Future<Result> getTopicList({String path: '/basliklar/gundem'}) async {
     List<Topic> topicList = new List<Topic>();
     var document = await _client.get(path: path);
-    var content = document.querySelector('#content');
+    var content = document.getElementById('content');
     var elementList = content.querySelectorAll('ul.topic-list > li');
-    var quickIndexContainer = content.getElementsByClassName('full-index-continue-link-container');
-    var pagerContainer = content.getElementsByClassName('pager');
-    var pager = new Pager();
-    if(quickIndexContainer.length > 0)
-    {
-      print('index exists');
-      var quickIndexContent = quickIndexContainer[0].getElementsByTagName('a');
-      if (quickIndexContent.length > 0)
-      {
-        var quickIndexPath = quickIndexContent[0].attributes['href'];
-        var quickIndexTitle = quickIndexContent[0].text;
-        pager.quickIndexPath = quickIndexPath;
-        pager.quickIndexText = quickIndexTitle.replaceAll(' ...', '');
-      }
-    }
-    else if (pagerContainer.length > 0)
-    {
-      print('page exists');
-      pager.pageCount = int.parse(pagerContainer[0].attributes['data-pagecount']);
-      pager.page = int.parse(pagerContainer[0].attributes['data-currentpage']);
-    }
-    
     for (var element in elementList) {
       try {
         if (element.text != null) {
@@ -92,15 +71,38 @@ class EksiService {
         print(error);
       }
     }
+    var quickIndexContainer = content.getElementsByClassName('full-index-continue-link-container');
+    var pagerContainer = content.getElementsByClassName('pager');
+    Pager pager = getPager(quickIndexContainer, pagerContainer);
     var result = new Result<Topic>(item: null, itemList: topicList, pager: pager);
     return result;
   }
 
-  Future<List<Entry>> getEntryList(String path) async {
+  Pager getPager(List<Element> quickIndexContainer, List<Element> pagerContainer) {
+    var pager = new Pager();
+    if(quickIndexContainer != null && quickIndexContainer.length > 0)
+    {
+      var quickIndexContent = quickIndexContainer[0].getElementsByTagName('a');
+      if (quickIndexContent.length > 0)
+      {
+        var quickIndexPath = quickIndexContent[0].attributes['href'];
+        var quickIndexTitle = quickIndexContent[0].text;
+        pager.quickIndexPath = quickIndexPath;
+        pager.quickIndexText = quickIndexTitle.replaceAll(' ...', '');
+      }
+    }
+    else if (pagerContainer.length > 0)
+    {
+      pager.pageCount = int.parse(pagerContainer[0].attributes['data-pagecount']);
+      pager.page = int.parse(pagerContainer[0].attributes['data-currentpage']);
+    }
+    return pager;
+  }
+
+  Future<Result<Entry>> getEntryList(String path) async {
     List<Entry> entryList = new List<Entry>();
     var document = await _client.get(path: path);
     var content = document.getElementById("content-body");
-    print(content.innerHtml);
     var rawEntryList = content.getElementsByClassName('content');
     var dateList = document.getElementsByClassName("entry-date");
     var authorList = document.getElementsByClassName("entry-author");
@@ -135,7 +137,12 @@ class EksiService {
       var entry = new Entry(id, entryContentList, author, date, favCount);
       entryList.add(entry);
     }
-    return entryList;
+    var pagerContainer = content.getElementsByClassName('pager');
+    Pager pager = getPager(null, pagerContainer);
+    var result = new Result<Entry>();
+    result.itemList = entryList;
+    result.pager = pager;
+    return result;
   }
 
   Future<bool> login() async {

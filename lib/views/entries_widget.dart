@@ -1,13 +1,19 @@
 import 'dart:async';
 
+import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/topic.dart';
+import 'package:eksi_reader/results/result.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/material.dart';
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
+  var service = new EksiService();
   EntriesWidget(this.topic);
+  Result<Entry> data;
+  bool loading = false;
   @override
   State createState() => new EntriesWidgetState(topic);
 }
@@ -16,8 +22,6 @@ class EntriesWidgetState extends State<EntriesWidget>
     with SingleTickerProviderStateMixin {
   Topic topic;
   EntriesWidgetState(this.topic);
-  List<Entry> _entryList;
-  var service = new EksiService();
 
   @override
   void initState() {
@@ -26,16 +30,16 @@ class EntriesWidgetState extends State<EntriesWidget>
   }
 
   Future<Null> loadData(String path) async {
-    var entryList = await service.getEntryList(path);
+    var result = await widget.service.getEntryList(path);
     setState(() {
-      _entryList = entryList;
+      widget.data = result;
     });
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_entryList == null) {
+    if (widget.data?.itemList == null) {
       return new Scaffold(
         appBar: AppBar(
           title: Text('EksiReader'),
@@ -54,12 +58,18 @@ class EntriesWidgetState extends State<EntriesWidget>
             preferredSize: Size(0.0, 48.0),
           ),
         ),
-        body: const Center(
-            child: const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white))),
+        body: SizedBox(
+            height: widget.loading ? 1.0 : 1.0,
+            child: new LinearProgressIndicator(
+              backgroundColor: widget.loading
+                  ? Theme.of(context).accentColor
+                  : Theme.of(context).primaryColor,
+            )),
       );
     }
     var listView = getListView();
+    var pagerWidget =
+        PagerWidget(widget.data.pager, handleOnMore, handleOnPage);
     return Scaffold(
         appBar: AppBar(
           title: Text('EksiReader'),
@@ -78,7 +88,44 @@ class EntriesWidgetState extends State<EntriesWidget>
             preferredSize: Size(0.0, 48.0),
           ),
         ),
-        body: listView);
+        body: Container(
+            padding: EdgeInsets.only(bottom: 20.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(
+                      height: widget.loading ? 1.0 : 1.0,
+                      child: !widget.loading ? Row() : new LinearProgressIndicator(
+                      )),
+                  Expanded(
+                    child: SizedBox(child: listView),
+                  ),
+                  pagerWidget,
+                  Row()
+                ])));
+  }
+
+  handleOnMore(path) async {
+    widget.data = await widget.service.getEntryList(path);
+    setState(() {});
+  }
+  Future sleep1() {
+    return new Future.delayed(const Duration(seconds: 1), () => "1");
+  }
+  handleOnPage(page) async {
+    
+    
+    setState(() {
+      widget.loading = true;
+    });
+    await new Future.delayed(const Duration(seconds: 1));
+    var path = EksiUri.getPathForPage(widget.topic.path, page);
+    widget.data = await widget.service.getEntryList(path);
+    
+    setState(() {
+      widget.loading = false;
+    });
   }
 
   ListView getListView() {
@@ -86,10 +133,10 @@ class EntriesWidgetState extends State<EntriesWidget>
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,
             ),
-        itemCount: _entryList.length,
+        itemCount: widget.data.itemList.length,
         physics: AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          var entry = _entryList[index];
+          var entry = widget.data.itemList[index];
           var listTile = ListTile(
             contentPadding:
                 EdgeInsets.only(top: 0, bottom: 0, left: 15, right: 0),
