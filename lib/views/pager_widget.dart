@@ -67,7 +67,9 @@ class PagerWidgetState extends State<PagerWidget> {
               },
               iconSize: 40),
           IconButton(
-              icon: Icon(Icons.last_page), onPressed: () {}, iconSize: 40),
+              icon: Icon(Icons.last_page), onPressed: () {
+                widget.onPage(widget.pager.pageCount);
+              }, iconSize: 40),
           Text(" "),
         ],
       ),

@@ -11,6 +11,9 @@ class EksiUri {
     }
     parameters.putIfAbsent('p', () => page.toString());
     var resultUri = Uri(path: uri.path, queryParameters: parameters);
+    if (path.contains('/basliklar/bugun/')) {
+      resultUri = Uri(path: '/basliklar/bugun/' + page.toString());
+    }
     return resultUri.toString();
   }
 }
