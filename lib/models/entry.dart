@@ -30,19 +30,19 @@ class Entry {
     return string;
   }
 
-  RichText resultRichText() {
+  RichText resultRichText(ThemeData theme) {
     var textSpanList = new List<TextSpan>();
     for (var content in contentList) {
       if (content.text != null) {
-        var span = TextSpan(text: content.text);
+        var span = TextSpan(text: content.text, style: theme.textTheme.body1);
         textSpanList.add(span);
       } else if (content.br == true) {
-        var span = TextSpan(text: '\n');
+        var span = TextSpan(text: '\n', style: theme.textTheme.body1);
         textSpanList.add(span);
       } else if (content.linkPath != null) {
         var span = TextSpan(
-            text: content.linkTitle,
-            style: TextStyle(color: Colors.lightBlueAccent),
+            text: content.linkTitle + '~',
+            style: theme.textTheme.display3,
             recognizer: TapGestureRecognizer()..onTap = () {
               print(content.linkPath);
               onUrl(content.linkPath, null, content.linkTitle);
@@ -51,7 +51,7 @@ class Entry {
       } else if (content.innerLinkPath != null) {
         var span = TextSpan(
             text: content.innerLinkTitle,
-            style: TextStyle(color: Colors.lightBlueAccent),
+            style: theme.textTheme.display3,
             recognizer: TapGestureRecognizer()..onTap = () {
               print(content.innerLinkPath);
               onUrl(null, content.innerLinkPath, content.innerLinkTitle);

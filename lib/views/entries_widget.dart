@@ -23,10 +23,12 @@ class EntriesWidgetState extends State<EntriesWidget>
     with SingleTickerProviderStateMixin {
   Topic topic;
   EntriesWidgetState(this.topic);
+  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     loadData(this.topic.path);
   }
 
@@ -37,12 +39,14 @@ class EntriesWidgetState extends State<EntriesWidget>
     });
     return null;
   }
+
   @override
   void didUpdateWidget(EntriesWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     widget.data = oldWidget.data;
     // here you can check value of old widget status and compare vs current one
   }
+
   @override
   Widget build(BuildContext context) {
     if (widget.data?.itemList == null) {
@@ -56,9 +60,7 @@ class EntriesWidgetState extends State<EntriesWidget>
                   padding: const EdgeInsets.fromLTRB(16.0, 0.0, 15.0, 10.0),
                   child: Text(
                     topic.title,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                    ),
+                    style: Theme.of(context).textTheme.title,
                   ),
                 )),
             preferredSize: Size(0.0, 48.0),
@@ -83,12 +85,10 @@ class EntriesWidgetState extends State<EntriesWidget>
             child: Align(
                 alignment: Alignment.centerLeft,
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 15.0, 10.0),
+                  padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
                   child: Text(
                     topic.title,
-                    style: TextStyle(
-                      fontSize: 15.0,
-                    ),
+                    style: Theme.of(context).textTheme.title,
                   ),
                 )),
             preferredSize: Size(0.0, 48.0),
@@ -102,9 +102,8 @@ class EntriesWidgetState extends State<EntriesWidget>
                 children: <Widget>[
                   SizedBox(
                       height: widget.loading ? 1.0 : 1.0,
-                      child: !widget.loading
-                          ? Row()
-                          : LinearProgressIndicator()),
+                      child:
+                          !widget.loading ? Row() : LinearProgressIndicator()),
                   Flexible(
                     child: SizedBox(child: listView),
                   ),
@@ -127,6 +126,7 @@ class EntriesWidgetState extends State<EntriesWidget>
     setState(() {
       widget.loading = false;
     });
+    scrollToTop();
   }
 
   handleOnUrl(url, innerUrl, title) async {
@@ -141,9 +141,18 @@ class EntriesWidgetState extends State<EntriesWidget>
       );
     }
   }
+  
+  scrollToTop() {
+    _scrollController.animateTo(_scrollController.position.minScrollExtent,
+        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+    setState(() => {});
+  }
+
+
 
   ListView getListView() {
     var listView = ListView.separated(
+        controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,
             ),
@@ -154,53 +163,64 @@ class EntriesWidgetState extends State<EntriesWidget>
           entry.onUrl = handleOnUrl;
           var listTile = ListTile(
             contentPadding:
-                EdgeInsets.only(top: 0, bottom: 0, left: 15, right: 0),
-            title: Container(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Container(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(entry.author.name,
-                                style: TextStyle(
-                                    color: Colors.lightBlueAccent,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500)),
-                            Text(entry.date,
-                                style: TextStyle(
-                                    color: Colors.grey[400],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w100)),
-                          ]),
-                    ),
-                    Container(
-                      child: IconButton(
-                        icon: Icon(Icons.more_horiz),
-                        onPressed: () {
-                          print('hey');
-                        },
-                      ),
-                    )
-                  ],
-                )),
+                EdgeInsets.only(top: 10, bottom: 0, left: 15, right: 15),
+            // title: Container(
+            //     padding: EdgeInsets.only(bottom: 10),
+            //     child: Row(
+            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //       children: <Widget>[
+            //         Container(
+            //           child: Column(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               children: <Widget>[
+            //                 Text(entry.author.name,
+            //                     style: Theme.of(context).textTheme.display1),
+            //                 Text(entry.date,
+            //                     style: Theme.of(context).textTheme.display2),
+            //               ]),
+            //         ),
+            //         Container(
+            //           child: IconButton(
+            //             icon: Icon(Icons.more_horiz),
+            //             onPressed: () {
+            //               print('hey');
+            //             },
+            //           ),
+            //         )
+            //       ],
+            //     )),
             subtitle: Container(
-                padding: EdgeInsets.only(right: 20),
+                padding: EdgeInsets.only(),
                 child: Column(
                   children: <Widget>[
                     Align(
                         alignment: Alignment.centerLeft,
-                        child: entry.resultRichText()),
-                    // RichText(
-                    //   text: TextSpan(
-                    //     text: entry.resultString(),
-                    //     style: TextStyle(
-                    //         color: Colors.grey[100], fontSize: 15),
-                    //         )
-                    //   )
-                    // ),
+                        child: entry.resultRichText(Theme.of(context))),
+                    Container(
+                        padding: EdgeInsets.only(bottom: 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text(entry.date,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .display2),
+                                        Text(entry.author.name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .display1),
+                                      ]),
+                                ))
+                          ],
+                        )),
                     Container(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -233,9 +253,9 @@ class EntriesWidgetState extends State<EntriesWidget>
                                             }),
                                         Text(
                                           entry.favCount + ' favori',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey[400]),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .display2,
                                         ),
                                       ],
                                     )),
@@ -243,7 +263,7 @@ class EntriesWidgetState extends State<EntriesWidget>
                             ),
                           ),
                           Container(
-                            transform: Matrix4.translationValues(20, 0, 0),
+                            transform: Matrix4.translationValues(14, 0, 0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
