@@ -11,12 +11,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
-  var service = new EksiService();
+  var service = EksiService();
   EntriesWidget(this.topic);
   Result<Entry> data;
   bool loading = false;
   @override
-  State createState() => new EntriesWidgetState(topic);
+  State createState() => EntriesWidgetState(topic);
 }
 
 class EntriesWidgetState extends State<EntriesWidget>
@@ -37,11 +37,16 @@ class EntriesWidgetState extends State<EntriesWidget>
     });
     return null;
   }
-
+  @override
+  void didUpdateWidget(EntriesWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    widget.data = oldWidget.data;
+    // here you can check value of old widget status and compare vs current one
+  }
   @override
   Widget build(BuildContext context) {
     if (widget.data?.itemList == null) {
-      return new Scaffold(
+      return Scaffold(
         appBar: AppBar(
           title: Text('EksiReader'),
           bottom: PreferredSize(
@@ -61,7 +66,7 @@ class EntriesWidgetState extends State<EntriesWidget>
         ),
         body: SizedBox(
             height: widget.loading ? 1.0 : 1.0,
-            child: new LinearProgressIndicator(
+            child: LinearProgressIndicator(
               backgroundColor: widget.loading
                   ? Theme.of(context).accentColor
                   : Theme.of(context).primaryColor,
@@ -99,8 +104,8 @@ class EntriesWidgetState extends State<EntriesWidget>
                       height: widget.loading ? 1.0 : 1.0,
                       child: !widget.loading
                           ? Row()
-                          : new LinearProgressIndicator()),
-                  Expanded(
+                          : LinearProgressIndicator()),
+                  Flexible(
                     child: SizedBox(child: listView),
                   ),
                   pagerWidget,
@@ -111,10 +116,6 @@ class EntriesWidgetState extends State<EntriesWidget>
   handleOnMore(path) async {
     widget.data = await widget.service.getEntryList(path);
     setState(() {});
-  }
-
-  Future sleep1() {
-    return new Future.delayed(const Duration(seconds: 1), () => "1");
   }
 
   handleOnPage(page) async {
@@ -133,7 +134,7 @@ class EntriesWidgetState extends State<EntriesWidget>
       await launch(url);
     } else if (innerUrl != null) {
       print('load $innerUrl');
-      var entryTopic = new Topic(title, null, innerUrl, '0');
+      var entryTopic = Topic(title, null, innerUrl, '0');
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => EntriesWidget(entryTopic)),
