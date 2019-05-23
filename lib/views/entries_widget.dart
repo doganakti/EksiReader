@@ -97,7 +97,7 @@ class EntriesWidgetState extends State<EntriesWidget>
                   SizedBox(
                       height: widget.loading ? 1.0 : 1.0,
                       child: !widget.loading ? Row() : new LinearProgressIndicator(
-                      )),
+                        )),
                   Expanded(
                     child: SizedBox(child: listView),
                   ),
@@ -119,7 +119,7 @@ class EntriesWidgetState extends State<EntriesWidget>
     setState(() {
       widget.loading = true;
     });
-    await new Future.delayed(const Duration(seconds: 1));
+    await new Future.delayed(const Duration(seconds: 2));
     var path = EksiUri.getPathForPage(widget.topic.path, page);
     widget.data = await widget.service.getEntryList(path);
     
