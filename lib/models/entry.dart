@@ -1,5 +1,8 @@
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/entry_content.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class Entry {
   String id;
@@ -7,12 +10,13 @@ class Entry {
   Author author;
   String date;
   String favCount;
+  Function(String, String, String) onUrl;
 
   Entry(this.id, this.contentList, this.author, this.date, this.favCount);
 
   String resultString() {
     String string = '';
-    for(var content in contentList) {
+    for (var content in contentList) {
       if (content.text != null) {
         string = string + content.text;
       } else if (content.br == true) {
@@ -24,5 +28,42 @@ class Entry {
       }
     }
     return string;
+  }
+
+  RichText resultRichText() {
+    var textSpanList = new List<TextSpan>();
+    for (var content in contentList) {
+      if (content.text != null) {
+        var span = TextSpan(text: content.text);
+        textSpanList.add(span);
+      } else if (content.br == true) {
+        var span = TextSpan(text: '\n');
+        textSpanList.add(span);
+      } else if (content.linkPath != null) {
+        var span = TextSpan(
+            text: content.linkTitle,
+            style: TextStyle(color: Colors.lightBlueAccent),
+            recognizer: TapGestureRecognizer()..onTap = () {
+              print(content.linkPath);
+              onUrl(content.linkPath, null, content.linkTitle);
+            });
+        textSpanList.add(span);
+      } else if (content.innerLinkPath != null) {
+        var span = TextSpan(
+            text: content.innerLinkTitle,
+            style: TextStyle(color: Colors.lightBlueAccent),
+            recognizer: TapGestureRecognizer()..onTap = () {
+              print(content.innerLinkPath);
+              onUrl(null, content.innerLinkPath, content.innerLinkTitle);
+            });
+        textSpanList.add(span);
+      }
+    }
+    var richText = RichText(
+      text: new TextSpan(
+        children: textSpanList
+      ),
+    );
+    return richText;
   }
 }

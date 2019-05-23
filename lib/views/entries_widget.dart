@@ -7,6 +7,7 @@ import 'package:eksi_reader/results/result.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
@@ -96,8 +97,9 @@ class EntriesWidgetState extends State<EntriesWidget>
                 children: <Widget>[
                   SizedBox(
                       height: widget.loading ? 1.0 : 1.0,
-                      child: !widget.loading ? Row() : new LinearProgressIndicator(
-                        )),
+                      child: !widget.loading
+                          ? Row()
+                          : new LinearProgressIndicator()),
                   Expanded(
                     child: SizedBox(child: listView),
                   ),
@@ -110,22 +112,33 @@ class EntriesWidgetState extends State<EntriesWidget>
     widget.data = await widget.service.getEntryList(path);
     setState(() {});
   }
+
   Future sleep1() {
     return new Future.delayed(const Duration(seconds: 1), () => "1");
   }
+
   handleOnPage(page) async {
-    
-    
     setState(() {
       widget.loading = true;
     });
-    await new Future.delayed(const Duration(seconds: 2));
     var path = EksiUri.getPathForPage(widget.topic.path, page);
     widget.data = await widget.service.getEntryList(path);
-    
     setState(() {
       widget.loading = false;
     });
+  }
+
+  handleOnUrl(url, innerUrl, title) async {
+    if (url != null) {
+      await launch(url);
+    } else if (innerUrl != null) {
+      print('load $innerUrl');
+      var entryTopic = new Topic(title, null, innerUrl, '0');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EntriesWidget(entryTopic)),
+      );
+    }
   }
 
   ListView getListView() {
@@ -137,6 +150,7 @@ class EntriesWidgetState extends State<EntriesWidget>
         physics: AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           var entry = widget.data.itemList[index];
+          entry.onUrl = handleOnUrl;
           var listTile = ListTile(
             contentPadding:
                 EdgeInsets.only(top: 0, bottom: 0, left: 15, right: 0),
@@ -151,7 +165,7 @@ class EntriesWidgetState extends State<EntriesWidget>
                           children: <Widget>[
                             Text(entry.author.name,
                                 style: TextStyle(
-                                    color: Colors.green[400],
+                                    color: Colors.lightBlueAccent,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500)),
                             Text(entry.date,
@@ -177,10 +191,15 @@ class EntriesWidgetState extends State<EntriesWidget>
                   children: <Widget>[
                     Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(entry.resultString(),
-                            style: TextStyle(
-                                color: Colors.grey[100], fontSize: 15),
-                            textAlign: TextAlign.left)),
+                        child: entry.resultRichText()),
+                    // RichText(
+                    //   text: TextSpan(
+                    //     text: entry.resultString(),
+                    //     style: TextStyle(
+                    //         color: Colors.grey[100], fontSize: 15),
+                    //         )
+                    //   )
+                    // ),
                     Container(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,

@@ -6,6 +6,7 @@
 #import <flutter_keychain/FlutterKeychainPlugin.h>
 #import <flutter_webview_plugin/FlutterWebviewPlugin.h>
 #import <shared_preferences/SharedPreferencesPlugin.h>
+#import <url_launcher/UrlLauncherPlugin.h>
 
 @implementation GeneratedPluginRegistrant
 
@@ -13,6 +14,7 @@
   [FlutterKeychainPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterKeychainPlugin"]];
   [FlutterWebviewPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterWebviewPlugin"]];
   [FLTSharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharedPreferencesPlugin"]];
+  [FLTUrlLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTUrlLauncherPlugin"]];
 }
 
 @end
