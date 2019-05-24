@@ -101,7 +101,8 @@ class EksiService {
 
   Future<Result<Entry>> getEntryList(String path) async {
     List<Entry> entryList = new List<Entry>();
-    var document = await _client.get(path: path);
+    try {
+      var document = await _client.get(path: path);
     var content = document.getElementById("content-body");
     var rawEntryList = content.getElementsByClassName('content');
     var dateList = document.getElementsByClassName("entry-date");
@@ -143,6 +144,16 @@ class EksiService {
     result.itemList = entryList;
     result.pager = pager;
     return result;
+    } catch (e) {
+      var pager = new Pager();
+      pager.quickIndexPath = "";
+      pager.quickIndexText = "";
+      var result = new Result<Entry>();
+      result.itemList = new List<Entry>();
+      result.pager = pager;
+      return result;
+    }
+    
   }
 
   Future<bool> login() async {

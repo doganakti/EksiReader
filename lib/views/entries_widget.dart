@@ -8,13 +8,16 @@ import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:boxicons_flutter/boxicons_flutter.dart';
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
   var service = EksiService();
   EntriesWidget(this.topic);
   Result<Entry> data;
-  bool loading = false;
+  bool loading = true;
+  bool noContent = false;
   @override
   State createState() => EntriesWidgetState(topic);
 }
@@ -36,6 +39,8 @@ class EntriesWidgetState extends State<EntriesWidget>
     var result = await widget.service.getEntryList(path);
     setState(() {
       widget.data = result;
+      widget.loading = false;
+      widget.noContent = widget.data?.itemList?.length == 0;
     });
     return null;
   }
@@ -44,72 +49,79 @@ class EntriesWidgetState extends State<EntriesWidget>
   void didUpdateWidget(EntriesWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     widget.data = oldWidget.data;
+    widget.loading = false;
     // here you can check value of old widget status and compare vs current one
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.data?.itemList == null) {
+    if (widget.noContent) {
       return Scaffold(
         appBar: AppBar(
-          title: Text('EksiReader'),
-          bottom: PreferredSize(
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 15.0, 10.0),
-                  child: Text(
-                    topic.title,
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                )),
-            preferredSize: Size(0.0, 48.0),
-          ),
-        ),
-        body: SizedBox(
-            height: widget.loading ? 1.0 : 1.0,
-            child: LinearProgressIndicator(
-              backgroundColor: widget.loading
-                  ? Theme.of(context).accentColor
-                  : Theme.of(context).primaryColor,
-            )),
+            title: Text(
+          topic.title,
+          maxLines: 2,
+          style: Theme.of(context).textTheme.title,
+        )),
+        body: Align(
+            alignment: Alignment.center,
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Icon(FontAwesomeIcons.exclamation, size: 30),
+                ),
+                Text("Yok böyle bişi")
+              ],
+            ),
+            ) ),
       );
     }
-    var listView = getListView();
-    var pagerWidget =
-        PagerWidget(widget.data.pager, handleOnMore, handleOnPage);
+    var listView = widget.data?.itemList != null ? getListView() : null;
+    var pagerWidget = widget.data?.itemList != null
+        ? PagerWidget(widget.data.pager, handleOnMore, handleOnPage)
+        : null;
     return Scaffold(
         appBar: AppBar(
-          title: Text('EksiReader'),
-          bottom: PreferredSize(
-            child: Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 10.0),
-                  child: Text(
-                    topic.title,
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                )),
-            preferredSize: Size(0.0, 48.0),
-          ),
-        ),
-        body: Container(
-            padding: EdgeInsets.only(bottom: 20.0),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                      height: widget.loading ? 1.0 : 1.0,
-                      child:
-                          !widget.loading ? Row() : LinearProgressIndicator()),
-                  Flexible(
-                    child: SizedBox(child: listView),
-                  ),
-                  pagerWidget,
-                  Row()
-                ])));
+            title: Text(
+          topic.title,
+          maxLines: 2,
+          style: Theme.of(context).textTheme.title,
+        )),
+        body: widget.data == null
+            ? Container(
+                padding: EdgeInsets.only(bottom: 20.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox(
+                          height: widget.loading ? 1.0 : 1.0,
+                          child: !widget.loading
+                              ? Row()
+                              : LinearProgressIndicator()),
+                    ]))
+            : Container(
+                padding: EdgeInsets.only(bottom: 20.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                          height: widget.loading ? 1.0 : 1.0,
+                          child: !widget.loading
+                              ? Row()
+                              : LinearProgressIndicator()),
+                      Flexible(
+                        child: listView,
+                      ),
+                      Container(
+                        child: pagerWidget != null ? pagerWidget : Text(''),
+                      ),
+                    ])));
   }
 
   handleOnMore(path) async {
@@ -141,14 +153,12 @@ class EntriesWidgetState extends State<EntriesWidget>
       );
     }
   }
-  
+
   scrollToTop() {
     _scrollController.animateTo(_scrollController.position.minScrollExtent,
-        duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        duration: Duration(milliseconds: 500), curve: Curves.decelerate);
     setState(() => {});
   }
-
-
 
   ListView getListView() {
     var listView = ListView.separated(

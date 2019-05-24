@@ -16,11 +16,11 @@ class AppTheme {
         // text styling for headlines, titles, bodies of text, and more.
         textTheme: TextTheme(
             headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-            button: TextStyle(fontSize: 18.0),
+            button: TextStyle(fontSize: 16.0),
             overline: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
             
             // ***** Entry Topic Header ****
-            title: TextStyle(fontSize: 18.0),
+            title: TextStyle(fontSize: 16.0),
             
             // **** Default Subtitle ****
             caption: TextStyle(fontSize: 18.0),

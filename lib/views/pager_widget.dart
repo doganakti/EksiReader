@@ -16,12 +16,15 @@ class PagerWidgetState extends State<PagerWidget> {
   PagerWidgetState();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
+    
+    return  Container(
+      
+      child: Material(
+        child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(" "),
+          
           IconButton(
               icon: Icon(Icons.first_page),
               onPressed: () {
@@ -36,7 +39,7 @@ class PagerWidgetState extends State<PagerWidget> {
                 }
               },
               iconSize: 40),
-          widget.pager.quickIndexPath != null
+          widget.pager?.quickIndexPath != null
               ? FlatButton(
                   child: SizedBox(
                     width: 100,
@@ -58,7 +61,7 @@ class PagerWidgetState extends State<PagerWidget> {
           IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
               onPressed: () {
-                if (widget.pager.page == null) {
+                if (widget.pager?.page == null) {
                   widget.onPage(2);
                 } else if (widget.pager.page < widget.pager.pageCount) {
                   widget.onPage(widget.pager.page + 1);
@@ -69,9 +72,10 @@ class PagerWidgetState extends State<PagerWidget> {
               icon: Icon(Icons.last_page), onPressed: () {
                 widget.onPage(widget.pager.pageCount);
               }, iconSize: 40),
-          Text(" "),
+          
         ],
       ),
+      ) ,
     );
   }
 }
