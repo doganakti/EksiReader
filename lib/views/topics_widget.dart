@@ -151,18 +151,19 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
     var listView = getListView();
     var pagerWidget =
         PagerWidget(widget.section.pager, handleOnMore, handleOnPage);
-    return new Container(
-        padding: EdgeInsets.only(bottom: 20.0),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(child: listView),
-              ),
-              pagerWidget,
-              Row()
-            ]));
+    return Stack(
+                children: <Widget>[
+                  listView,
+                  Container(
+                    alignment: Alignment.bottomCenter,
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      height: 64,
+                      child: pagerWidget
+                    ),
+                  )
+                ],
+              );
   }
 
   handleOnMore(path) async {
@@ -182,6 +183,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
 
   ListView getListView() {
     var listView = ListView.builder(
+      padding: EdgeInsets.only(bottom: 84),
       itemCount: widget.section.topicList?.length,
       physics: AlwaysScrollableScrollPhysics(),
       itemBuilder: (context, index) {

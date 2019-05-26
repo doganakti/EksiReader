@@ -112,28 +112,19 @@ class EntriesWidgetState extends State<EntriesWidget>
                               ? Row()
                               : LinearProgressIndicator()),
                     ]))
-            : Container(
-                padding: EdgeInsets.only(bottom: 20.0),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Visibility(
-                        visible: widget.loading,
-                        child:  SizedBox(
-                          height: widget.loading ? 2.0 : 2.0,
-                          child: !widget.loading
-                              ? Row()
-                              : LinearProgressIndicator()),
-                      ),
-                     
-                      Flexible(
-                        child: listView,
-                      ),
-                      Container(
-                        child: pagerWidget != null ? pagerWidget : Text(''),
-                      ),
-                    ])));
+            : Stack(
+              children: <Widget>[
+                listView,
+                Container(
+                    alignment: Alignment.bottomCenter,
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      height: 64,
+                      child: pagerWidget
+                    ),
+                  )
+              ],
+                ));
   }
 
   handleOnMore(path) async {
@@ -174,6 +165,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   ListView getListView() {
     var listView = ListView.separated(
+      padding: EdgeInsets.only(bottom: 84),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,

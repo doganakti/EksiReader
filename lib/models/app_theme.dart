@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData dark() {
-    var brightness = Brightness.light; 
+    var brightness = Brightness.dark; 
     var themeData = ThemeData(
         // Define the default Brightness and Colors
         // deepOrangeAccent
@@ -56,7 +56,7 @@ class AppTheme {
             
             // **** Url ***
             display3: TextStyle(
-                color: Color(0xffa16523),
+                color: brightness == Brightness.dark ? Colors.orangeAccent : Color(0xffa16523),
                 fontSize: 15, fontWeight: brightness == Brightness.dark ? FontWeight.w400 : FontWeight.w500)));
 
     return themeData;

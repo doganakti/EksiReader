@@ -17,7 +17,14 @@ class PagerWidgetState extends State<PagerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
+      padding: EdgeInsets.only(left: 10, right: 10),
+      child: Card(
+        elevation: 5,
+        color: Theme.of(context).scaffoldBackgroundColor,
+        shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+        child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
@@ -50,8 +57,7 @@ class PagerWidgetState extends State<PagerWidget> {
                     ),
                   ),
                   onTap: () => {widget.onPath(widget.pager.quickIndexPath)})
-              : SizedBox(
-                  width: 134,
+              : Flexible(
                   child: Center(
                       child: Text(widget.pager.page.toString() +
                           ' / ' +
@@ -73,13 +79,14 @@ class PagerWidgetState extends State<PagerWidget> {
               },
               iconSize: 40),
           IconButton(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
               icon: Icon(Icons.last_page),
               onPressed: () {
                 widget.onPage(widget.pager.pageCount);
               },
               iconSize: 40),
         ],
+      ),
       ),
     );
   }
