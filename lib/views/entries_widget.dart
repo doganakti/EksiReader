@@ -32,7 +32,7 @@ class EntriesWidgetState extends State<EntriesWidget>
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController(initialScrollOffset: -100.0);
+    _scrollController = ScrollController(initialScrollOffset: -30.0);
     
     loadData(this.topic.path);
   }
@@ -171,7 +171,7 @@ class EntriesWidgetState extends State<EntriesWidget>
               color: Colors.black45,
             ),
         itemCount: widget.data.itemList.length,
-        physics: AlwaysScrollableScrollPhysics(),
+        physics: ScrollPhysics(),
         itemBuilder: (context, index) {
           var entry = widget.data.itemList[index];
           entry.onUrl = handleOnUrl;
