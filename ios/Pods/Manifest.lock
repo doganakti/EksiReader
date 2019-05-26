@@ -4,36 +4,73 @@ PODS:
     - Flutter
   - flutter_webview_plugin (0.0.1):
     - Flutter
+  - flutter_youtube (0.0.1):
+    - Flutter
+    - XCDYouTubeKit
+  - share (0.5.2):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
   - url_launcher (0.0.1):
     - Flutter
+  - video_player (0.0.1):
+    - Flutter
+  - XCDYouTubeKit (2.7.3)
+  - youtube_player (0.0.1):
+    - Flutter
+  - ytview (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - flutter_keychain (from `.symlinks/plugins/flutter_keychain/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
+  - flutter_youtube (from `.symlinks/plugins/flutter_youtube/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
+  - youtube_player (from `.symlinks/plugins/youtube_player/ios`)
+  - ytview (from `.symlinks/plugins/ytview/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - XCDYouTubeKit
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   flutter_keychain:
     :path: ".symlinks/plugins/flutter_keychain/ios"
   flutter_webview_plugin:
     :path: ".symlinks/plugins/flutter_webview_plugin/ios"
+  flutter_youtube:
+    :path: ".symlinks/plugins/flutter_youtube/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
+  youtube_player:
+    :path: ".symlinks/plugins/youtube_player/ios"
+  ytview:
+    :path: ".symlinks/plugins/ytview/ios"
 
 SPEC CHECKSUMS:
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_keychain: 01aabf894ffe8b01adfda1d9df21c210c1b4b452
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
+  flutter_youtube: 142f8d5af0a11963bdc73e13bcae6eb78db746c2
+  share: 7d22fe8baedfe93aefd864bf0b73f29711fbb0a3
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
+  video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
+  XCDYouTubeKit: 3f4fd3eb3ed494a46a8f007b91315eed6dd6df1f
+  youtube_player: 66aa84ca8819ad8ef7305299c2ee31ccf42121a1
+  ytview: 211c9c56fd31223a3be2c8f98942c69921a4c595
 
 PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
 

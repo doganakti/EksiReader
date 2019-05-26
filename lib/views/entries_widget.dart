@@ -12,6 +12,8 @@ import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boxicons_flutter/boxicons_flutter.dart';
+import 'package:flutter_youtube/flutter_youtube.dart';
+
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
@@ -20,6 +22,8 @@ class EntriesWidget extends StatefulWidget {
   Result<Entry> data;
   bool loading = true;
   bool noContent = false;
+  
+  
   @override
   State createState() => EntriesWidgetState(topic);
 }
@@ -29,6 +33,8 @@ class EntriesWidgetState extends State<EntriesWidget>
   Topic topic;
   EntriesWidgetState(this.topic);
   ScrollController _scrollController;
+  VoidCallback listener;
+  var youtube = FlutterYoutube();
 
   @override
   void initState() {
@@ -37,6 +43,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
     loadData(this.topic.path);
   }
+
 
   Future<Null> loadData(String path) async {
     var result = await widget.service.getEntryList(path: path);
@@ -62,13 +69,8 @@ class EntriesWidgetState extends State<EntriesWidget>
     if (widget.noContent) {
       return Scaffold(
         appBar: AppBar(
-            title: Text(
-          topic.title,
-          maxLines: 2,
-          style: TextStyle(
-            fontSize: 16
-          )
-        )),
+            title:
+                Text(topic.title, maxLines: 2, style: TextStyle(fontSize: 16))),
         body: Align(
             alignment: Alignment.center,
             child: Container(
@@ -95,9 +97,7 @@ class EntriesWidgetState extends State<EntriesWidget>
             title: Text(
           topic.title,
           maxLines: 2,
-          style: TextStyle(
-            fontSize: 16
-          ),
+          style: TextStyle(fontSize: 16),
         )),
         body: widget.data == null
             ? Container(
@@ -113,18 +113,16 @@ class EntriesWidgetState extends State<EntriesWidget>
                               : LinearProgressIndicator()),
                     ]))
             : Stack(
-              children: <Widget>[
-                listView,
-                Container(
+                children: <Widget>[
+                  
+                  listView,
+                  Container(
                     alignment: Alignment.bottomCenter,
                     padding: EdgeInsets.only(bottom: 20),
-                    child: Container(
-                      height: 64,
-                      child: pagerWidget
-                    ),
+                    child: Container(height: 64, child: pagerWidget),
                   )
-              ],
-                ));
+                ],
+              ));
   }
 
   handleOnMore(path) async {
@@ -146,7 +144,16 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   handleOnUrl(url, innerUrl, title) async {
     if (url != null) {
-      await launch(url);
+      if (false) {
+        FlutterYoutube.playYoutubeVideoByUrl(
+          apiKey: "AIzaSyB1n1lUDW2feEVIljSicVeKHCXGl2WfbnQ",
+          videoUrl: url,
+          autoPlay: true, //default falase
+        );
+      }
+      else {
+        await launch(url);
+      }
     } else if (innerUrl != null) {
       print('load $innerUrl');
       var entryTopic = Topic(title, null, innerUrl, '0');
@@ -165,7 +172,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   ListView getListView() {
     var listView = ListView.separated(
-      padding: EdgeInsets.only(bottom: 84),
+        padding: EdgeInsets.only(bottom: 84),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,
