@@ -121,7 +121,6 @@ class TopicsWidgetState extends State<TopicsWidget>
                   icon: Icon(Icons.settings),
                   onPressed: () async {
                     print("hey");
-                    var entryList = await service.getEntryList(null);
                   })
             ],
             bottom: getTabBar()),

@@ -32,9 +32,13 @@ class EksiClient {
   }
 
   Future<Document> get(
-      {String path: '/basliklar/gundem', bool cacheCookies: false}) async {
+      {String path: '/basliklar/gundem', bool cacheCookies: false, bool subContent}) async {
     var client = new Dio();
-    var response = await client.get(_url + path, options: Options(headers: _headers));
+    var headers = _headers;
+    if (subContent != null) {
+      headers['x-requested-with'] = 'XMLHttpRequest';
+    }
+    var response = await client.get(_url + path, options: Options(headers: headers));
     if (cacheCookies) {
       var setCookies = response.headers['set-cookie'];
       setHeaders(setCookies);

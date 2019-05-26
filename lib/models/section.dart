@@ -9,8 +9,9 @@ class Section {
   List<Segment> segments;
   List<Topic> topicList;
   Pager pager;
+  String authorSection;
 
-  Section({this.title, this.path, this.login, this.segments});
+  Section({this.title, this.path, this.login, this.segments, this.authorSection});
 
   factory Section.fromJson(Map<String, dynamic> json) {
     List<Segment> segmentList = null;

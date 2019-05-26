@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/topic.dart';
@@ -31,12 +32,13 @@ class EntriesWidgetState extends State<EntriesWidget>
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    _scrollController = ScrollController(initialScrollOffset: -100.0);
+    
     loadData(this.topic.path);
   }
 
   Future<Null> loadData(String path) async {
-    var result = await widget.service.getEntryList(path);
+    var result = await widget.service.getEntryList(path:path);
     setState(() {
       widget.data = result;
       widget.loading = false;
@@ -50,6 +52,7 @@ class EntriesWidgetState extends State<EntriesWidget>
     super.didUpdateWidget(oldWidget);
     widget.data = oldWidget.data;
     widget.loading = false;
+    
     // here you can check value of old widget status and compare vs current one
   }
 
@@ -125,7 +128,7 @@ class EntriesWidgetState extends State<EntriesWidget>
   }
 
   handleOnMore(path) async {
-    widget.data = await widget.service.getEntryList(path);
+    widget.data = await widget.service.getEntryList(path:path);
     setState(() {});
   }
 
@@ -134,7 +137,7 @@ class EntriesWidgetState extends State<EntriesWidget>
       widget.loading = true;
     });
     var path = EksiUri.getPathForPage(widget.topic.path, page);
-    widget.data = await widget.service.getEntryList(path);
+    widget.data = await widget.service.getEntryList(path:path);
     setState(() {
       widget.loading = false;
     });
@@ -155,6 +158,7 @@ class EntriesWidgetState extends State<EntriesWidget>
   }
 
   scrollToTop() {
+    _scrollController.jumpTo(0);
     _scrollController.animateTo(_scrollController.position.minScrollExtent,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
     setState(() => {});
@@ -162,7 +166,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   ListView getListView() {
     var listView = ListView.separated(
-        controller: _scrollController,
+      controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,
             ),
@@ -174,31 +178,6 @@ class EntriesWidgetState extends State<EntriesWidget>
           var listTile = ListTile(
             contentPadding:
                 EdgeInsets.only(top: 10, bottom: 0, left: 15, right: 15),
-            // title: Container(
-            //     padding: EdgeInsets.only(bottom: 10),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: <Widget>[
-            //         Container(
-            //           child: Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               children: <Widget>[
-            //                 Text(entry.author.name,
-            //                     style: Theme.of(context).textTheme.display1),
-            //                 Text(entry.date,
-            //                     style: Theme.of(context).textTheme.display2),
-            //               ]),
-            //         ),
-            //         Container(
-            //           child: IconButton(
-            //             icon: Icon(Icons.more_horiz),
-            //             onPressed: () {
-            //               print('hey');
-            //             },
-            //           ),
-            //         )
-            //       ],
-            //     )),
             subtitle: Container(
                 padding: EdgeInsets.only(),
                 child: Column(
@@ -223,10 +202,19 @@ class EntriesWidgetState extends State<EntriesWidget>
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .display2),
-                                        Text(entry.author.name,
+                                        InkWell(
+                                          child: Text(entry.author.name,
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .display1),
+                                              onTap:() {
+                                                var topic = new Topic(entry.author.name, null, entry.author.path, null);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (context) => EntriesWidget(topic)),
+                                                );
+                                              },
+                                        )
                                       ]),
                                 ))
                           ],
@@ -298,48 +286,5 @@ class EntriesWidgetState extends State<EntriesWidget>
           return listTileContainer;
         });
     return listView;
-  }
-}
-
-class SliverMultilineAppBar extends StatelessWidget {
-  final String title;
-  final Widget leading;
-  final List<Widget> actions;
-
-  SliverMultilineAppBar({this.title, this.leading, this.actions});
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-
-    double availableWidth = mediaQuery.size.width - 150;
-    if (actions != null) {
-      availableWidth -= 32 * actions.length;
-    }
-    if (leading != null) {
-      availableWidth -= 32;
-    }
-    return SliverAppBar(
-      expandedHeight: 160,
-      leading: leading,
-      actions: actions,
-      flexibleSpace: FlexibleSpaceBar(
-        titlePadding: EdgeInsets.only(top: 20, bottom: 10),
-        background: Image.network(
-          "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&h=350",
-          fit: BoxFit.cover,
-        ),
-        title: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: availableWidth,
-          ),
-          child: Text(
-            title,
-            textScaleFactor: 1,
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-      ),
-    );
   }
 }

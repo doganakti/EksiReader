@@ -1,5 +1,6 @@
 class Author {
+  String id;
   String name;
   String path;
-  Author({this.name, this.path});
+  Author({this.id, this.name, this.path});
 }

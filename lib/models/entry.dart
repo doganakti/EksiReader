@@ -1,5 +1,6 @@
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/entry_content.dart';
+import 'package:eksi_reader/models/topic.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -11,8 +12,9 @@ class Entry {
   String date;
   String favCount;
   Function(String, String, String) onUrl;
+  Topic topic;
 
-  Entry(this.id, this.contentList, this.author, this.date, this.favCount);
+  Entry(this.id, this.contentList, this.author, this.date, this.favCount, this.topic);
 
   String resultString() {
     String string = '';
@@ -32,6 +34,10 @@ class Entry {
 
   RichText resultRichText(ThemeData theme) {
     var textSpanList = new List<TextSpan>();
+    if (topic != null) {
+      var span = TextSpan(text: topic.title + '\n\n', style: theme.textTheme.display3);
+      textSpanList.add(span);
+    }
     for (var content in contentList) {
       if (content.text != null) {
         var span = TextSpan(text: content.text, style: theme.textTheme.body1);
