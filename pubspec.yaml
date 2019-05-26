@@ -30,10 +30,6 @@ dependencies:
   url_launcher: ^5.0.2
   font_awesome_flutter: ^8.2.0
   boxicons_flutter: ^1.1.0
-  flutter_youtube: "^1.1.6"
-  youtube_player_flutter: ^1.1.1+1
-  youtube_player: ^3.4.1
-  video_player: "^0.5.1"
   
 
 

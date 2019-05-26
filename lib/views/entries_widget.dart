@@ -11,9 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:boxicons_flutter/boxicons_flutter.dart';
-import 'package:flutter_youtube/flutter_youtube.dart';
-
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
@@ -22,8 +19,7 @@ class EntriesWidget extends StatefulWidget {
   Result<Entry> data;
   bool loading = true;
   bool noContent = false;
-  
-  
+
   @override
   State createState() => EntriesWidgetState(topic);
 }
@@ -33,8 +29,6 @@ class EntriesWidgetState extends State<EntriesWidget>
   Topic topic;
   EntriesWidgetState(this.topic);
   ScrollController _scrollController;
-  VoidCallback listener;
-  var youtube = FlutterYoutube();
 
   @override
   void initState() {
@@ -43,7 +37,6 @@ class EntriesWidgetState extends State<EntriesWidget>
 
     loadData(this.topic.path);
   }
-
 
   Future<Null> loadData(String path) async {
     var result = await widget.service.getEntryList(path: path);
@@ -114,7 +107,6 @@ class EntriesWidgetState extends State<EntriesWidget>
                     ]))
             : Stack(
                 children: <Widget>[
-                  
                   listView,
                   Container(
                     alignment: Alignment.bottomCenter,
@@ -144,16 +136,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   handleOnUrl(url, innerUrl, title) async {
     if (url != null) {
-      if (false) {
-        FlutterYoutube.playYoutubeVideoByUrl(
-          apiKey: "AIzaSyB1n1lUDW2feEVIljSicVeKHCXGl2WfbnQ",
-          videoUrl: url,
-          autoPlay: true, //default falase
-        );
-      }
-      else {
-        await launch(url);
-      }
+      await launch(url);
     } else if (innerUrl != null) {
       print('load $innerUrl');
       var entryTopic = Topic(title, null, innerUrl, '0');
@@ -172,6 +155,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   ListView getListView() {
     var listView = ListView.separated(
+        addAutomaticKeepAlives: true,
         padding: EdgeInsets.only(bottom: 84),
         controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
