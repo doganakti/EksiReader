@@ -8,6 +8,7 @@ import 'package:eksi_reader/results/result.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boxicons_flutter/boxicons_flutter.dart';
@@ -33,12 +34,12 @@ class EntriesWidgetState extends State<EntriesWidget>
   void initState() {
     super.initState();
     _scrollController = ScrollController(initialScrollOffset: -30.0);
-    
+
     loadData(this.topic.path);
   }
 
   Future<Null> loadData(String path) async {
-    var result = await widget.service.getEntryList(path:path);
+    var result = await widget.service.getEntryList(path: path);
     setState(() {
       widget.data = result;
       widget.loading = false;
@@ -52,7 +53,7 @@ class EntriesWidgetState extends State<EntriesWidget>
     super.didUpdateWidget(oldWidget);
     widget.data = oldWidget.data;
     widget.loading = false;
-    
+
     // here you can check value of old widget status and compare vs current one
   }
 
@@ -64,7 +65,9 @@ class EntriesWidgetState extends State<EntriesWidget>
             title: Text(
           topic.title,
           maxLines: 2,
-          style: Theme.of(context).textTheme.title,
+          style: TextStyle(
+            fontSize: 16
+          )
         )),
         body: Align(
             alignment: Alignment.center,
@@ -72,15 +75,15 @@ class EntriesWidgetState extends State<EntriesWidget>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Icon(FontAwesomeIcons.exclamation, size: 30),
-                ),
-                Text("Yok böyle bişi")
-              ],
-            ),
-            ) ),
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Icon(FontAwesomeIcons.exclamation, size: 30),
+                  ),
+                  Text("Yok böyle bişi")
+                ],
+              ),
+            )),
       );
     }
     var listView = widget.data?.itemList != null ? getListView() : null;
@@ -92,7 +95,9 @@ class EntriesWidgetState extends State<EntriesWidget>
             title: Text(
           topic.title,
           maxLines: 2,
-          style: Theme.of(context).textTheme.title,
+          style: TextStyle(
+            fontSize: 16
+          ),
         )),
         body: widget.data == null
             ? Container(
@@ -102,7 +107,7 @@ class EntriesWidgetState extends State<EntriesWidget>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(
-                          height: widget.loading ? 1.0 : 1.0,
+                          height: widget.loading ? 2.0 : 2.0,
                           child: !widget.loading
                               ? Row()
                               : LinearProgressIndicator()),
@@ -113,11 +118,15 @@ class EntriesWidgetState extends State<EntriesWidget>
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                          height: widget.loading ? 1.0 : 1.0,
+                      Visibility(
+                        visible: widget.loading,
+                        child:  SizedBox(
+                          height: widget.loading ? 2.0 : 2.0,
                           child: !widget.loading
                               ? Row()
                               : LinearProgressIndicator()),
+                      ),
+                     
                       Flexible(
                         child: listView,
                       ),
@@ -128,7 +137,7 @@ class EntriesWidgetState extends State<EntriesWidget>
   }
 
   handleOnMore(path) async {
-    widget.data = await widget.service.getEntryList(path:path);
+    widget.data = await widget.service.getEntryList(path: path);
     setState(() {});
   }
 
@@ -137,7 +146,7 @@ class EntriesWidgetState extends State<EntriesWidget>
       widget.loading = true;
     });
     var path = EksiUri.getPathForPage(widget.topic.path, page);
-    widget.data = await widget.service.getEntryList(path:path);
+    widget.data = await widget.service.getEntryList(path: path);
     setState(() {
       widget.loading = false;
     });
@@ -158,7 +167,6 @@ class EntriesWidgetState extends State<EntriesWidget>
   }
 
   scrollToTop() {
-    _scrollController.jumpTo(0);
     _scrollController.animateTo(_scrollController.position.minScrollExtent,
         duration: Duration(milliseconds: 500), curve: Curves.decelerate);
     setState(() => {});
@@ -166,7 +174,7 @@ class EntriesWidgetState extends State<EntriesWidget>
 
   ListView getListView() {
     var listView = ListView.separated(
-      controller: _scrollController,
+        controller: _scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.black45,
             ),
@@ -185,43 +193,36 @@ class EntriesWidgetState extends State<EntriesWidget>
                     Align(
                         alignment: Alignment.centerLeft,
                         child: entry.resultRichText(Theme.of(context))),
-                    Container(
-                        padding: EdgeInsets.only(bottom: 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            Container(
-                                padding: EdgeInsets.only(top: 10),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text(entry.date,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .display2),
-                                        InkWell(
-                                          child: Text(entry.author.name,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .display1),
-                                              onTap:() {
-                                                var topic = new Topic(entry.author.name, null, entry.author.path, null);
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(builder: (context) => EntriesWidget(topic)),
-                                                );
-                                              },
-                                        )
-                                      ]),
-                                ))
-                          ],
-                        )),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(entry.date,
+                                  style: Theme.of(context).textTheme.display2),
+                              InkWell(
+                                child: widget.topic.path.contains('/biri/')
+                                    ? Text('')
+                                    : Text(entry.author.name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .display1),
+                                onTap: () {
+                                  var topic = new Topic(entry.author.name, null,
+                                      entry.author.path, null);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EntriesWidget(topic)),
+                                  );
+                                },
+                              )
+                            ])),
                     Container(
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(

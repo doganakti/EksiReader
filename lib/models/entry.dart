@@ -35,7 +35,14 @@ class Entry {
   RichText resultRichText(ThemeData theme) {
     var textSpanList = new List<TextSpan>();
     if (topic != null) {
-      var span = TextSpan(text: topic.title + '\n\n', style: theme.textTheme.display3);
+      var span = TextSpan(
+        text: topic.title + '\n\n',
+        style: theme.textTheme.display3,
+        recognizer: TapGestureRecognizer()..onTap = () {
+              print(topic.path);
+              onUrl(null, topic.path, topic.title);
+            }
+        );
       textSpanList.add(span);
     }
     for (var content in contentList) {

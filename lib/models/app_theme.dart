@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   static ThemeData dark() {
+    var brightness = Brightness.light; 
     var themeData = ThemeData(
         // Define the default Brightness and Colors
-        brightness: Brightness.dark,
-        primaryColor: Color(0xff303030),
-        primarySwatch: Colors.purple,
-        accentColor: Colors.cyan[600],
-
+        // deepOrangeAccent
+        // Color(0xff1da1f2)
+        brightness: brightness,
+        primaryColor: brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey,
+        primarySwatch: brightness == Brightness.dark ? Colors.blueGrey : Colors.blueGrey,
+        accentColor: brightness == Brightness.dark ? Colors.white : Colors.white,
+        scaffoldBackgroundColor: brightness == Brightness.dark ? Color(0xff303030) : Color(0xfff6f1e6),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor:brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey, 
+          foregroundColor: Colors.white,
+        ),
+        
         // Define the default Font Family
         fontFamily: 'Roboto',
 
@@ -29,10 +37,10 @@ class AppTheme {
             subhead: TextStyle(fontSize: 16.0), // ListView Title
             
             // **** Entry Content ****
-            body1: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400),
+            body1: TextStyle(fontSize: 15.0, fontWeight: brightness == Brightness.dark ? FontWeight.w400 : FontWeight.w500),
 
             // **** Topic ****
-            body2: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+            body2: TextStyle(fontSize: 36.0),
 
             // **** Author ****
             display1: TextStyle(
@@ -48,8 +56,8 @@ class AppTheme {
             
             // **** Url ***
             display3: TextStyle(
-                color: Colors.orangeAccent,
-                fontSize: 15)));
+                color: Color(0xffa16523),
+                fontSize: 15, fontWeight: brightness == Brightness.dark ? FontWeight.w400 : FontWeight.w500)));
 
     return themeData;
   }

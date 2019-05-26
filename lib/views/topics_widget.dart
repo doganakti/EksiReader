@@ -60,6 +60,8 @@ class TopicsWidgetState extends State<TopicsWidget>
   RefreshIndicator getTabBarViewChild(Section section) {
     var topicsContentWidget = TopicsContentWidget(section);
     return RefreshIndicator(
+        backgroundColor: Theme.of(context).primaryColor,
+        color: Colors.white,
         onRefresh: () async {
           var result = await service.getTopicList(path: section.path);
           section.topicList = result.itemList;
@@ -93,7 +95,7 @@ class TopicsWidgetState extends State<TopicsWidget>
         ),
         body: const Center(
             child: const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white))),
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey))),
       );
     }
     var tabBarViewChildren = new List<RefreshIndicator>();
@@ -147,7 +149,8 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
   @override
   Widget build(BuildContext context) {
     var listView = getListView();
-    var pagerWidget = PagerWidget(widget.section.pager, handleOnMore, handleOnPage);
+    var pagerWidget =
+        PagerWidget(widget.section.pager, handleOnMore, handleOnPage);
     return new Container(
         padding: EdgeInsets.only(bottom: 20.0),
         child: Column(
@@ -166,8 +169,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
     var result = await widget.service.getTopicList(path: path);
     widget.section.topicList = result.itemList;
     widget.section.pager = result.pager;
-    setState((){
-    });
+    setState(() {});
   }
 
   handleOnPage(page) async {
@@ -175,8 +177,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
     var result = await widget.service.getTopicList(path: path);
     widget.section.topicList = result.itemList;
     widget.section.pager = result.pager;
-    setState((){
-    });
+    setState(() {});
   }
 
   ListView getListView() {
@@ -198,7 +199,12 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
                               style: TextStyle(color: Colors.green)),
                           Text(topic.title)
                         ]
-                      : <Widget>[Text(topic.title)],
+                      : <Widget>[
+                          Text(
+                            topic.title,
+                            style: Theme.of(context).textTheme.body1,
+                          )
+                        ],
                 ),
               ),
               Row(

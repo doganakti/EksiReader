@@ -9,7 +9,6 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     var materialApp = new MaterialApp(
         title: 'EksiReader', home: new TopicsWidget(), theme: AppTheme.dark());
-
     return materialApp;
   }
 }

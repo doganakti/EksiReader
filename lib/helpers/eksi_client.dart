@@ -37,6 +37,8 @@ class EksiClient {
     var headers = _headers;
     if (subContent != null) {
       headers['x-requested-with'] = 'XMLHttpRequest';
+    } else {
+      headers['x-requested-with'] = null;
     }
     var response = await client.get(_url + path, options: Options(headers: headers));
     if (cacheCookies) {
