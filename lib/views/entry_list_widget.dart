@@ -40,10 +40,12 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: <Widget>[
         getProgress(),
-        getMainContent(),
+        Flexible(
+          child: getMainContent(),
+        ),
         getPagerWidget()
       ],
     );
