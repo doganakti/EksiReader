@@ -134,6 +134,7 @@ class EksiService {
         topicContainer.getElementsByTagName('a')[0].attributes['href'],
         null
         );
+      topicModel.path = EksiUri.resetPath(topicModel.path, path);
       var topicItemList = topic.getElementsByClassName('topic-item');
       var entryList = new List<Entry>();
       if (topicItemList.length > 0) {

@@ -53,4 +53,16 @@ class EksiUri {
     }
     return '${section.path}&p=$page';
   }
+
+  static String resetPath(String rootPath, String fullPath) {
+    var uri = Uri.parse(fullPath);
+    var parameters = new Map<String, String>();
+    for(var key in uri.queryParameters.keys) {
+      if (key != 'q') {
+        parameters.putIfAbsent(key, () => uri.queryParameters[key]);
+      }
+    }
+    var resultUri = Uri(path: rootPath, queryParameters: parameters);
+    return resultUri.toString();
+  }
 }

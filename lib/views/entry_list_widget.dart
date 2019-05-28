@@ -58,7 +58,6 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   loadData(String path) async {
     loading = true;
-    print(path);
     var result = await service.getEntryList(path: path);
     setState(() {
       widget.entryList = result.itemList;
