@@ -127,6 +127,13 @@ class EksiService {
       }
       var document = await _client.get(path: path, subContent: subContent);
       var topic = document.getElementById('topic');
+      var topicContainer = topic.getElementsByTagName('h1')[0];
+      var topicModel = new Topic(
+        topicContainer.attributes['data-title'],
+        null,
+        topicContainer.getElementsByTagName('a')[0].attributes['href'],
+        null
+        );
       var topicItemList = topic.getElementsByClassName('topic-item');
       var entryList = new List<Entry>();
       if (topicItemList.length > 0) {
@@ -155,6 +162,7 @@ class EksiService {
         }
       }
       result.itemList = entryList;
+      result.topic = topicModel;
       var pagerContainer = document.getElementsByClassName('pager');
       result.pager = getPager(null, pagerContainer);
     } catch (e) {

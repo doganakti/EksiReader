@@ -17,7 +17,7 @@ class PagerWidgetState extends State<PagerWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10),
+      padding: EdgeInsets.only(left: 5, right: 5),
       child: Card(
         elevation: 5,
         color: Theme.of(context).scaffoldBackgroundColor,

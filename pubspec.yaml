@@ -30,6 +30,9 @@ dependencies:
   url_launcher: ^5.0.2
   font_awesome_flutter: ^8.2.0
   boxicons_flutter: ^1.1.0
+  sticky_headers: "^0.1.7"
+  sticky_header_list: ^1.0.6
+  flutter_sticky_header: "^0.3.4"
   
 
 
