@@ -6,6 +6,7 @@ import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/empty_widget.dart';
+import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController(initialScrollOffset: -30.0);
+    scrollController = ScrollController(initialScrollOffset: -00.0);
 
     loadData(this.widget.path);
   }
@@ -47,11 +48,15 @@ class EntryListWidgetState extends State<EntryListWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        getProgress(),
+        Row(),
         Flexible(
-          child: getMainContent(),
-        ),
-        getPagerWidget()
+            child: Stack(
+          children: <Widget>[
+            getMainContent(),
+            getProgress(),
+          ],
+        )),
+        getPagerWidget(),
       ],
     );
   }
@@ -65,7 +70,10 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   loadData(String path) async {
     loading = true;
-    var result = widget.author == null ? await service.getEntryList(path: path) : await service.getAuthorEntryList(widget.author, widget.section, widget.page);
+    var result = widget.author == null
+        ? await service.getEntryList(path: path)
+        : await service.getAuthorEntryList(
+            widget.author, widget.section, widget.page);
     setState(() {
       widget.entryList = result.itemList;
       pager = result.pager;
@@ -102,9 +110,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
   }
 
   Widget getProgress() {
-    return SizedBox(
-        height: loading ? 2.0 : 2.0,
-        child: !loading ? Row() : LinearProgressIndicator());
+    return Container(child: !loading ? Row() : LoadingWidget());
   }
 
   Widget getPagerWidget() {
