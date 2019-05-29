@@ -1,5 +1,6 @@
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/topic.dart';
+import 'package:eksi_reader/views/author_widget.dart';
 import 'package:eksi_reader/views/entries_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,12 +39,10 @@ class EntryWidgetState extends State<EntryWidget> {
                         child: Text(widget.entry.author.name,
                             style: Theme.of(context).textTheme.display1),
                         onTap: () {
-                          var topic = new Topic(widget.entry.author.name, null,
-                              widget.entry.author.path, null);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => EntriesWidget(topic)),
+                                builder: (context) => AuthorWidget(widget.entry.author)),
                           );
                         },
                       )

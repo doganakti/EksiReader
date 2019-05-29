@@ -1,0 +1,86 @@
+import 'package:eksi_reader/models/author.dart';
+import 'package:eksi_reader/models/section.dart';
+import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+
+class AuthorWidget extends StatefulWidget {
+  Author author;
+  AuthorWidget(this.author);
+  @override
+  State createState() => AuthorWidgetState(author);
+}
+
+class AuthorWidgetState extends State<AuthorWidget>
+    with SingleTickerProviderStateMixin {
+  Author author;
+  AuthorWidgetState(this.author);
+  EksiService service = EksiService();
+  List<Section> sectionList;
+  TabController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    loadSections(author);
+  }
+
+  loadSections(Author author) async {
+    var result = await service.getAuthorSections(author);
+    setState(() {
+      sectionList = result.itemList;
+      controller = new TabController(length: sectionList.length, vsync: this);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (sectionList == null) {
+      return Scaffold(
+        appBar: AppBar(
+            title:
+                Text(author.name, maxLines: 2, style: TextStyle(fontSize: 16))),
+      );
+    }
+    return Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              isScrollable: true,
+              controller: controller,
+              tabs: getTabs(),
+            ),
+            title:
+                Text(author.name, maxLines: 2, style: TextStyle(fontSize: 16)),
+          ),
+          body: getTabBarsView(),
+        );
+  }
+
+  getTabs() {
+    var tabList = new List<Tab>();
+    if (sectionList != null) {
+      for(var section in sectionList) {
+        var tab = Tab(text: section.title);
+        tabList.add(tab);
+      }
+    }
+    return tabList;
+  }
+
+  getTabBarsView() {
+    var entryWidgets = new List<Widget>();
+    if (sectionList != null) {
+      for(var section in sectionList) {
+        var widget = Center(
+          child: Text(section.title)
+        );
+        entryWidgets.add(widget);
+      }
+    }
+    var tabbarView = TabBarView(
+      controller: controller,
+      children: entryWidgets
+    );
+    return tabbarView;
+  }
+}
