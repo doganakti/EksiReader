@@ -10,13 +10,13 @@ class AppTheme {
         brightness: brightness,
         primaryColor: brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey,
         primarySwatch: brightness == Brightness.dark ? Colors.blueGrey : Colors.blueGrey,
-        accentColor: brightness == Brightness.dark ? Colors.white : Colors.white,
+        accentColor: brightness == Brightness.dark ? Colors.orangeAccent : Colors.white,
         scaffoldBackgroundColor: brightness == Brightness.dark ? Color(0xff303030) : Color(0xfff6f1e6),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor:brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey, 
           foregroundColor: Colors.white,
         ),
-        
+
         // Define the default Font Family
         fontFamily: 'Roboto',
 

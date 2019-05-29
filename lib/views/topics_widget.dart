@@ -198,7 +198,7 @@ class TopicsContentWidgetState extends State<TopicsContentWidget> {
                   children: topic.detail != null
                       ? <Widget>[
                           Text(topic.detail,
-                              style: TextStyle(color: Colors.green)),
+                              style: Theme.of(context).textTheme.display1),
                           Text(topic.title)
                         ]
                       : <Widget>[
