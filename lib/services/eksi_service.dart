@@ -87,7 +87,8 @@ class EksiService {
     return result;
   }
 
-  Pager getPager(List<Element> quickIndexContainer, List<Element> pagerContainer) {
+  Pager getPager(
+      List<Element> quickIndexContainer, List<Element> pagerContainer) {
     var pager = new Pager();
     if (quickIndexContainer != null && quickIndexContainer.length > 0) {
       var quickIndexContent = quickIndexContainer[0].getElementsByTagName('a');
@@ -128,12 +129,8 @@ class EksiService {
       var document = await _client.get(path: path, subContent: subContent);
       var topic = document.getElementById('topic');
       var topicContainer = topic.getElementsByTagName('h1')[0];
-      var topicModel = new Topic(
-        topicContainer.attributes['data-title'],
-        null,
-        topicContainer.getElementsByTagName('a')[0].attributes['href'],
-        null
-        );
+      var topicModel = new Topic(topicContainer.attributes['data-title'], null,
+          topicContainer.getElementsByTagName('a')[0].attributes['href'], null);
       topicModel.path = EksiUri.resetPath(topicModel.path, path);
       var topicItemList = topic.getElementsByClassName('topic-item');
       var entryList = new List<Entry>();
@@ -213,15 +210,24 @@ class EksiService {
     return contentList;
   }
 
-  Future<Result<Section>> getAuthorSections(Author author) async {
+  Future<Result<Section>> getAuthorSections({Author author}) async {
     List<Section> sectionList = new List<Section>();
     try {
       var document = await _client.get(path: author.path);
       var content = document.getElementById("profile-stats-section-nav");
       var aList = content.getElementsByTagName('a');
       for (var a in aList) {
-        var section = new Section(title: a.text, path: a.attributes['href']);
-        sectionList.add(section);
+        var section =
+            new Section(title: a.text.trim(), path: a.attributes['href']);
+        if (!section.title.contains('istatistikler') &&
+            !section.path.contains('el-emegi-goz-nuru') &&
+            !section.path.contains('favori-yazarlari') &&
+            !section.path.contains('katkida-bulundugu-kanallar') &&
+            !section.path.contains('ukteleri') &&
+            !section.title.contains('sorunsalları') &&
+            !section.title.contains('sorunsal yanıtları')) {
+          sectionList.add(section);
+        }
       }
     } catch (e) {
       print(e);

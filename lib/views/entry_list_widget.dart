@@ -1,6 +1,8 @@
+import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/pager.dart';
+import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/empty_widget.dart';
@@ -16,9 +18,12 @@ import 'entry_widget.dart';
 
 class EntryListWidget extends StatefulWidget {
   String path;
+  Author author;
+  Section section;
+  int page;
   List<Entry> entryList;
   bool separator;
-  EntryListWidget({this.path});
+  EntryListWidget({this.path, this.author, this.section, this.page: 1});
   @override
   EntryListWidgetState createState() => EntryListWidgetState();
 }
@@ -60,7 +65,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   loadData(String path) async {
     loading = true;
-    var result = await service.getEntryList(path: path);
+    var result = widget.author == null ? await service.getEntryList(path: path) : await service.getAuthorEntryList(widget.author, widget.section, widget.page);
     setState(() {
       widget.entryList = result.itemList;
       pager = result.pager;

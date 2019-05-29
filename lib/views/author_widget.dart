@@ -1,6 +1,7 @@
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:eksi_reader/views/entry_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -26,7 +27,7 @@ class AuthorWidgetState extends State<AuthorWidget>
   }
 
   loadSections(Author author) async {
-    var result = await service.getAuthorSections(author);
+    var result = await service.getAuthorSections(author: author);
     setState(() {
       sectionList = result.itemList;
       controller = new TabController(length: sectionList.length, vsync: this);
@@ -72,7 +73,12 @@ class AuthorWidgetState extends State<AuthorWidget>
     if (sectionList != null) {
       for(var section in sectionList) {
         var widget = Center(
-          child: Text(section.title)
+          child: EntryListWidget(
+            path: section.path,
+            author: author,
+            section: section,
+            page: 1,
+          )
         );
         entryWidgets.add(widget);
       }

@@ -65,6 +65,8 @@ class PagerWidgetState extends State<PagerWidget> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16
                           ))),
                 ),
           IconButton(
