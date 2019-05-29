@@ -12,23 +12,22 @@ import 'package:flutter/material.dart';
 import 'empty_widget.dart';
 
 class TopicListWidget extends StatefulWidget {
-  
   String path;
   Pager pager;
   List<Topic> topicList;
 
   TopicListWidget({this.path});
-  
+
   @override
   TopicListWidgetState createState() => TopicListWidgetState();
 }
 
 class TopicListWidgetState extends State<TopicListWidget> {
-  
   EksiService service = EksiService();
-  ScrollController scrollController =  ScrollController();
+  ScrollController scrollController = ScrollController();
   bool loading;
   bool noContent = false;
+  bool refreshing = false;
 
   @override
   void initState() {
@@ -42,37 +41,45 @@ class TopicListWidgetState extends State<TopicListWidget> {
     widget.path = oldWidget.path;
     widget.topicList = oldWidget.topicList;
     widget.pager = oldWidget.pager;
-    
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Row(),
-        Flexible(
-            child: Stack(
+    return  RefreshIndicator(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        color: Theme.of(context).accentColor,
+        onRefresh: () async {
+          refreshing = true;
+          await loadData(widget.path);
+        },
+        child: Column(
           children: <Widget>[
-            getMainContent(),
-            getProgress(),
+            Row(),
+            Flexible(
+                child: Stack(
+              children: <Widget>[
+                getMainContent(),
+                getProgress(),
+              ],
+            )),
+            getPagerWidget(),
           ],
-        )),
-        getPagerWidget(),
-      ],
-    );
+        ));
   }
 
   Future<void> loadData(String path) async {
     loading = true;
-    setState(() {
-      
-    });
+    if (refreshing) {
+      loading = false;
+    }
+    setState(() {});
     var result = await service.getTopicList(path: path);
     widget.pager = result.pager;
     widget.topicList = result.itemList;
     widget.path = path;
     noContent = widget.topicList == null || widget.topicList.length == 0;
     loading = false;
+    refreshing = false;
     setState(() {});
   }
 

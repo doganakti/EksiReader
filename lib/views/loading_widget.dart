@@ -8,12 +8,12 @@ class LoadingWidget extends StatelessWidget {
     return Center(
       child: Container(
         width: 64,
-        height: 64,
+        height:64,
         child: Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50.0),
           ),
-          elevation: 15,
+          elevation: 2,
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Container(padding: EdgeInsets.all(0), child: ColorLoader3()))
       )

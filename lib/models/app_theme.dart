@@ -10,7 +10,7 @@ class AppTheme {
         brightness: brightness,
         primaryColor: brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey,
         primarySwatch: brightness == Brightness.dark ? Colors.blueGrey : Colors.blueGrey,
-        accentColor: brightness == Brightness.dark ? Colors.orangeAccent : Colors.white,
+        accentColor: brightness == Brightness.dark ? Colors.orange : Colors.white,
         scaffoldBackgroundColor: brightness == Brightness.dark ? Color(0xff303030) : Color(0xfff6f1e6),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor:brightness == Brightness.dark ? Color(0xff303030) : Colors.blueGrey, 

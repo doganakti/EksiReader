@@ -34,7 +34,7 @@ class PagerWidgetState extends State<PagerWidget> {
               onPressed: () {
                 widget.onPage(1);
               },
-              iconSize: 40),
+              iconSize: 30),
           IconButton(
               color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
               icon: Icon(Icons.keyboard_arrow_left),
@@ -43,7 +43,7 @@ class PagerWidgetState extends State<PagerWidget> {
                   widget.onPage(widget.pager.page - 1);
                 }
               },
-              iconSize: 40),
+              iconSize: 30),
           widget.pager?.quickIndexPath != null
               ? InkWell(
                   child: SizedBox(
@@ -79,14 +79,14 @@ class PagerWidgetState extends State<PagerWidget> {
                   widget.onPage(widget.pager.page + 1);
                 }
               },
-              iconSize: 40),
+              iconSize: 30),
           IconButton(
               color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
               icon: Icon(Icons.last_page),
               onPressed: () {
                 widget.onPage(widget.pager.pageCount);
               },
-              iconSize: 40),
+              iconSize: 30),
         ],
       ),
       ),
