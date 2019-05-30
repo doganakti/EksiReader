@@ -1,3 +1,5 @@
+import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:eksi_reader/models/app_theme.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/settings_section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
@@ -46,6 +48,13 @@ class SettingsWidgetState extends State<SettingsWidget>
                 print(value);
                 section.selectedValue = value;
                 await FlutterKeychain.put(key: section.key, value: value);
+                var fontSizeKey = await FlutterKeychain.get(key: 'FontSize');
+                double fontSize = double.parse(fontSizeKey);
+                var theme = await FlutterKeychain.get(key: 'Tema');
+                var fontFamily = await FlutterKeychain.get(key: 'FontFamily');
+                if (section.key == 'Tema' || section.key == 'FontSize' || section.key == 'FontFamily') {
+                  DynamicTheme.of(context).setThemeData(AppTheme.theme(theme, fontSize, fontFamily));
+                }
                 setState(() {
                   
                 });

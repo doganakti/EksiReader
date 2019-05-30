@@ -1,7 +1,6 @@
-import 'package:eksi_reader/models/settings_body.dart';
+import 'package:eksi_reader/models/settings_content.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 
 class PickerWidget {
   List<SettingsContent> contentList;
@@ -16,7 +15,7 @@ class PickerWidget {
           return Container(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
-              mainAxisSize: MainAxisSize.max,
+              mainAxisSize: MainAxisSize.min,
               children: tiles,
             ),
           );
@@ -34,25 +33,5 @@ class PickerWidget {
             ))
         .toList();
     return tiles;
-    // return ListView.builder(
-    //   itemCount: contentList.length,
-
-    //   itemBuilder: (context, index) {
-    //     var content = contentList[index];
-    //     return ListTile(
-    //         onTap: () {
-    //           // Navigator.push(
-    //           //   context,
-    //           //   MaterialPageRoute(builder: (context) => EntriesWidget(topic)),
-    //           // );
-    //         },
-    //         title: Row(
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           children: <Widget>[
-    //             Text(content.title)
-    //           ],
-    //         ));
-    //   },
-    // );
   }
 }

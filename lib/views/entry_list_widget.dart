@@ -77,7 +77,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     setState(() {
       widget.entryList = result.itemList;
       pager = result.pager;
-      widget.path = result.topic.path;
+      widget.path = result.topic?.path;
       loading = false;
       noContent = widget.entryList?.length == 0;
     });

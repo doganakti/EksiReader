@@ -1,4 +1,4 @@
-import 'package:eksi_reader/models/settings_body.dart';
+import 'package:eksi_reader/models/settings_content.dart';
 
 class SettingsSection {
   String title;
