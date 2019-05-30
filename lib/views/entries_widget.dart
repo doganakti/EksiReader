@@ -39,7 +39,7 @@ class EntriesWidgetState extends State<EntriesWidget>
     return Scaffold(
         appBar: AppBar(
             title:
-                Text(topic.title, maxLines: 2, style: TextStyle(fontSize: 16))),
+                Text(topic.title, maxLines: 2)),
         body: Column(
           children: <Widget>[
             Flexible(

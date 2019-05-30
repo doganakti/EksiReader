@@ -25,14 +25,18 @@ class TopicListWidget extends StatefulWidget {
 class TopicListWidgetState extends State<TopicListWidget> {
   EksiService service = EksiService();
   ScrollController scrollController = ScrollController();
-  bool loading;
+  bool loading = false;
   bool noContent = false;
   bool refreshing = false;
 
   @override
   void initState() {
     super.initState();
-    loadData(widget.path);
+    if (widget?.topicList == null) {
+      loadData(widget.path);
+    } else {
+      loadData(null);
+    }
   }
 
   @override
@@ -45,7 +49,7 @@ class TopicListWidgetState extends State<TopicListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return  RefreshIndicator(
+    return RefreshIndicator(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         color: Theme.of(context).accentColor,
         onRefresh: () async {
@@ -68,19 +72,23 @@ class TopicListWidgetState extends State<TopicListWidget> {
   }
 
   Future<void> loadData(String path) async {
-    loading = true;
-    if (refreshing) {
+    if (path == null) {
+      setState(() {});
+    } else {
+      loading = true;
+      if (refreshing) {
+        loading = false;
+      }
+      setState(() {});
+      var result = await service.getTopicList(path: path);
+      widget.pager = result.pager;
+      widget.topicList = result.itemList;
+      widget.path = path;
+      noContent = widget.topicList == null || widget.topicList.length == 0;
       loading = false;
+      refreshing = false;
+      setState(() {});
     }
-    setState(() {});
-    var result = await service.getTopicList(path: path);
-    widget.pager = result.pager;
-    widget.topicList = result.itemList;
-    widget.path = path;
-    noContent = widget.topicList == null || widget.topicList.length == 0;
-    loading = false;
-    refreshing = false;
-    setState(() {});
   }
 
   Widget getMainContent() {
@@ -115,7 +123,10 @@ class TopicListWidgetState extends State<TopicListWidget> {
                       ? <Widget>[
                           Text(topic.detail,
                               style: Theme.of(context).textTheme.display1),
-                          Text(topic.title)
+                          Text(
+                            topic.title,
+                            style: Theme.of(context).textTheme.body1,
+                          )
                         ]
                       : <Widget>[
                           Text(
@@ -145,7 +156,7 @@ class TopicListWidgetState extends State<TopicListWidget> {
       alignment: Alignment.bottomCenter,
       child: Container(
         alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 20),
+        padding: EdgeInsets.only(bottom: 10),
         child: Container(
             height: 64,
             child: widget.pager != null

@@ -14,7 +14,7 @@ class Section {
   Section({this.title, this.path, this.login, this.segments, this.authorSection});
 
   factory Section.fromJson(Map<String, dynamic> json) {
-    List<Segment> segmentList = null;
+    List<Segment> segmentList = [];
     if (json['segments'] != null) {
       var list = json['segments'] as List;
       segmentList = list.map((i) => Segment.fromJson(i)).toList();

@@ -9,9 +9,11 @@ import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
 import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/section.dart';
+import 'package:eksi_reader/models/settings_section.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/results/result.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:html/dom.dart';
 
 class EksiService {
@@ -40,6 +42,19 @@ class EksiService {
   Future<List<Section>> getSectionList() async {
     var configuration = await getConfiguration();
     return configuration.sections;
+  }
+
+  Future<List<SettingsSection>> getSettingsSectionList() async {
+    var configuration = await getConfiguration();
+    for(var section in configuration.settingsSections) {
+      var value = await FlutterKeychain.get(key: section.key);
+      if (value == null) {
+        await FlutterKeychain.put(key: section.key, value: section.selectedValue);
+      } else {
+        section.selectedValue = value;
+      }
+    }
+    return configuration.settingsSections;
   }
 
   Future<Result> getTopicList({String path: '/basliklar/gundem'}) async {

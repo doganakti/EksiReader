@@ -1,6 +1,8 @@
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/login_widget.dart';
+import 'package:eksi_reader/views/settings_widget.dart';
 import 'package:eksi_reader/views/topic_list.widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,26 +35,7 @@ class HomeWidgetState extends State<HomeWidget>
   Widget build(BuildContext context) {
     if (widget.sectionList == null) {
       return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginWidget()),
-                );
-              }),
-          title:
-              Text('EksiReader', maxLines: 2, style: TextStyle(fontSize: 16)),
-          actions: <Widget>[
-            // action button
-            IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  print("hey");
-                })
-          ],
-        ),
+        body: LoadingWidget(),
       );
     }
     return Scaffold(
@@ -70,13 +53,16 @@ class HomeWidgetState extends State<HomeWidget>
                 MaterialPageRoute(builder: (context) => LoginWidget()),
               );
             }),
-        title: Text('EksiReader', maxLines: 2, style: TextStyle(fontSize: 16)),
+        title: Text('EksiReader', maxLines: 2),
         actions: <Widget>[
           // action button
           IconButton(
               icon: Icon(Icons.settings),
               onPressed: () {
-                print("hey");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsWidget()),
+                );
               })
         ],
       ),

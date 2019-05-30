@@ -1,5 +1,7 @@
 {
-    "sections": [{
+    "sections":
+    [
+        {
             "title": "Gündem",
             "path": "/basliklar/gundem",
             "login": false
@@ -38,6 +40,110 @@
             "title": "Kenar",
             "path": "/basliklar/kenar",
             "login": false
+        }
+    ],
+    "settings_sections":
+    [
+        {
+            "title": "Tema",
+            "key": "Tema",
+            "selected_value": "Klasik",
+            "contents":
+            [
+                {
+                    "title": "Klasik",
+                    "value": "Klasik"
+                },
+                {
+                    "title": "Karanlık",
+                    "value": "Karanlık"
+                },
+                {
+                    "title": "Portakal",
+                    "value": "Portakal"
+                },
+                {
+                    "title": "Gökyüzü",
+                    "value": "Gökyüzü"
+                },
+                {
+                    "title": "Sıcak",
+                    "value": "Sıcak"
+                }
+            ]
+        },
+        {
+            "title": "Font",
+            "key": "FontFamily",
+            "selected_value": "Roboto",
+            "contents":
+            [
+                {
+                    "title": "Roboto",
+                    "value": "Roboto"
+                },
+                {
+                    "title": "Seravek",
+                    "value": "Seravek"
+                },
+                {
+                    "title": "OpenSans",
+                    "value": "OpenSans"
+                },
+                {
+                    "title": "Montserrat",
+                    "value": "Montserrat"
+                }
+            ]
+        },
+        {
+            "title": "Metin Büyüklüğü",
+            "key": "FontSize",
+            "selected_value": "14",
+            "contents":
+            [
+                {
+                    "title": "12",
+                    "value": "12"
+                },
+                {
+                    "title": "13",
+                    "value": "13"
+                },
+                {
+                    "title": "14",
+                    "value": "14"
+                },
+                {
+                    "title": "15",
+                    "value": "15"
+                },
+                {
+                    "title": "16",
+                    "value": "16"
+                },
+                {
+                    "title": "17",
+                    "value": "17"
+                },
+                {
+                    "title": "18",
+                    "value": "18"
+                }
+            ]
+        },
+        {
+            "title": "Kullanıcı Sözleşmesi",
+            "key": "EULA",
+            "new_route": true,
+            "selected_value": "",
+            "contents":
+            [
+                {
+                    "title":"Kullanıcı Sözleşmesi",
+                    "value": "Kullanıcı Sözleşmesi İçeriği \n ..."
+                }
+            ]
         }
     ]
 }

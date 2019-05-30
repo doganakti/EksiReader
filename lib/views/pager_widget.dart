@@ -19,7 +19,7 @@ class PagerWidgetState extends State<PagerWidget> {
     return Container(
       padding: EdgeInsets.only(left: 5, right: 5),
       child: Card(
-        elevation: 5,
+        elevation: 0,
         color: Theme.of(context).scaffoldBackgroundColor,
         shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
@@ -29,14 +29,14 @@ class PagerWidgetState extends State<PagerWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           IconButton(
-              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
               icon: Icon(Icons.first_page),
               onPressed: () {
                 widget.onPage(1);
               },
               iconSize: 30),
           IconButton(
-              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
               icon: Icon(Icons.keyboard_arrow_left),
               onPressed: () {
                 if (widget.pager.page > 1) {
@@ -52,7 +52,7 @@ class PagerWidgetState extends State<PagerWidget> {
                       child: Text(widget.pager.quickIndexText,
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+                            color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
                           )),
                     ),
                   ),
@@ -64,13 +64,13 @@ class PagerWidgetState extends State<PagerWidget> {
                           widget.pager.pageCount.toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+                            color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
                             fontWeight: FontWeight.w600,
                             fontSize: 16
                           ))),
                 ),
           IconButton(
-              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
               icon: Icon(Icons.keyboard_arrow_right),
               onPressed: () {
                 if (widget.pager?.page == null) {
@@ -81,7 +81,7 @@ class PagerWidgetState extends State<PagerWidget> {
               },
               iconSize: 30),
           IconButton(
-              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).primaryColor : Colors.white,
+              color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
               icon: Icon(Icons.last_page),
               onPressed: () {
                 widget.onPage(widget.pager.pageCount);
