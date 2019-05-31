@@ -93,7 +93,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     }
   }
 
-  Widget getListView() {
+  Widget getListViewWithHeader() {
     var stickyListItems = new List<StickyListRow>();
     var header = new HeaderRow(child: Container(height: 0));
     stickyListItems.add(header);
@@ -109,6 +109,24 @@ class EntryListWidgetState extends State<EntryListWidget> {
     return headerContainer;
   }
 
+  Widget getListView() {
+    var listView = ListView.separated(
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.grey[600],
+      ),
+      itemCount: widget.entryList.length,
+      itemBuilder: (context, index) {
+        var entry = widget.entryList[index];
+        entry.onUrl = handleOnUrl;
+        return ListTile(
+          title: EntryWidget(
+          entry: entry, separator: widget.entryList.last.id != entry.id),
+        );
+      }
+    );
+    return listView;
+  }
+
   Widget getProgress() {
     return Container(child: !loading ? Row() : LoadingWidget());
   }
@@ -118,9 +136,9 @@ class EntryListWidgetState extends State<EntryListWidget> {
       alignment: Alignment.bottomCenter,
       child: Container(
         alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 20),
+        padding: EdgeInsets.only(bottom: 5),
         child: Container(
-            height: 64,
+            height: 50,
             child: pager != null
                 ? PagerWidget(pager, handleOnMore, handleOnPage)
                 : Container(

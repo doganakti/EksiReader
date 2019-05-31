@@ -12,7 +12,7 @@ class AppTheme {
         primarySwatch: Colors.blueGrey,
         accentColor: Colors.orange,
         scaffoldBackgroundColor: Color(0xff303030),
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 3, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -69,11 +69,10 @@ class AppTheme {
         // Color(0xff1da1f2)
         brightness: brightness,
         primaryColor: Color(0xfff6f1e6),
-        primarySwatch: Colors.blueGrey,
         accentColor: Colors.black87,
         scaffoldBackgroundColor: Color(0xfff6f1e6),
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 3, color: Colors.black, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.black, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -125,6 +124,18 @@ class AppTheme {
     return themeData;
   }
 
+
+  static ThemeData test(double fontSize, String fontFamily) {
+    var themeData = light(fontSize, fontFamily).copyWith(
+      brightness: Brightness.light,
+      primaryColor: Color(0xfff6f1e6),
+      accentColor: Colors.black87,
+      scaffoldBackgroundColor: Color(0xfff6f1e6),
+      appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.black, fontWeight: FontWeight.w500))),
+    );
+    return themeData;
+  }
+
   static ThemeData orange(double fontSize, String fontFamily) {
     var brightness = Brightness.light;
     var themeData = ThemeData(
@@ -134,11 +145,11 @@ class AppTheme {
         brightness: brightness,
         primaryColor: Colors.deepOrange,
         primarySwatch: Colors.blueGrey,
-        accentColor: Colors.black87,
+        accentColor: Colors.deepOrange,
         scaffoldBackgroundColor: Color(0xfff6f1e6),
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 3, color: Colors.white, fontWeight: FontWeight.w500))),
-
+        appBarTheme: AppBarTheme(
+          textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
         // Define the default Font Family
         fontFamily: fontFamily,
 
@@ -176,7 +187,7 @@ class AppTheme {
             
             // **** Url ***
             display3: TextStyle(
-                color: Color(0xffa16523),
+                color: Colors.deepOrange,// Color(0xffa16523),
                 fontSize: fontSize,
                 fontWeight: FontWeight.w500),
             
@@ -189,19 +200,19 @@ class AppTheme {
     return themeData;
   }
 
-  static ThemeData sky(double fontSize, String fontFamily) {
+  static ThemeData classic(double fontSize, String fontFamily) {
     var brightness = Brightness.light;
     var themeData = ThemeData(
         // Define the default Brightness and Colors
         // deepOrangeAccent
         // Color(0xff1da1f2)
         brightness: brightness,
-        primaryColor: Colors.lightBlueAccent,
+        primaryColor: Colors.grey[800],
         primarySwatch: Colors.blueGrey,
-        accentColor: Colors.black87,
-        scaffoldBackgroundColor: Color(0xfff6f1e6),
+        accentColor: Colors.grey[800],
+        scaffoldBackgroundColor: Colors.grey[200],
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 3, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -240,7 +251,7 @@ class AppTheme {
             
             // **** Url ***
             display3: TextStyle(
-                color: Color(0xffa16523),
+                color: Colors.yellow[900],
                 fontSize: fontSize,
                 fontWeight: FontWeight.w500),
             
@@ -265,7 +276,7 @@ class AppTheme {
         accentColor: Colors.red,
         scaffoldBackgroundColor: Colors.grey[200],
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 3, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -318,7 +329,7 @@ class AppTheme {
   }
 
    static ThemeData theme(String key, double fontSize, String fontFamily) {
-     Map<String, ThemeData> themeDatas = {'Klasik': AppTheme.light(fontSize, fontFamily), 'Karanlık': AppTheme.dark(fontSize, fontFamily), 'Portakal': AppTheme.orange(fontSize, fontFamily), 'Gökyüzü': AppTheme.sky(fontSize, fontFamily), 'Sıcak': AppTheme.hot(fontSize, fontFamily)};
+     Map<String, ThemeData> themeDatas = {'Aydınlık': AppTheme.light(fontSize, fontFamily), 'Klasik': AppTheme.light(fontSize, fontFamily), 'Karanlık': AppTheme.dark(fontSize, fontFamily), 'Portakal': AppTheme.orange(fontSize, fontFamily), 'Klasik': AppTheme.classic(fontSize, fontFamily), 'Sıcak': AppTheme.hot(fontSize, fontFamily)};
      return themeDatas[key];
    }
 

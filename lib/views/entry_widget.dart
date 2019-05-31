@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class EntryWidget extends StatefulWidget {
   Entry entry;
   bool separator;
-  EntryWidget({this.entry, this.separator:false});
+  EntryWidget({this.entry, this.separator: false});
   @override
   EntryWidgetState createState() => EntryWidgetState();
 }
@@ -21,39 +21,36 @@ class EntryWidgetState extends State<EntryWidget> {
         child: Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top: 15, left: 15, right: 15),
+          padding: EdgeInsets.only(top: 5, left: 0, right: 0),
           child: Column(
-          children: <Widget>[
-            Align(
-                alignment: Alignment.centerLeft,
-                child: widget.entry.resultRichText(Theme.of(context))),
-            Align(
-                alignment: Alignment.centerRight,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(widget.entry.date,
-                          style: Theme.of(context).textTheme.display2),
-                      InkWell(
-                        child: Text(widget.entry.author.name,
-                            style: Theme.of(context).textTheme.display1),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AuthorWidget(widget.entry.author)),
-                          );
-                        },
-                      )
-                    ])),
-            bottomMenu
-          ],
-        ),
-        ),
-        Container(
-          height: 1.0,
-          color: widget.separator ? Colors.black12 : Colors.transparent,
+            children: <Widget>[
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: widget.entry.resultRichText(Theme.of(context))),
+              Align(
+                  alignment: Alignment.centerRight,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(widget.entry.date,
+                            style: Theme.of(context).textTheme.display2),
+                        InkWell(
+                          child: Text(widget.entry.author.name,
+                              style: Theme.of(context).textTheme.display1),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AuthorWidget(widget.entry.author)),
+                            );
+                          },
+                        )
+                      ])),
+              bottomMenu
+            ],
+          ),
         )
       ],
     ));

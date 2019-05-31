@@ -40,7 +40,7 @@ class AuthorWidgetState extends State<AuthorWidget>
       return Scaffold(
         appBar: AppBar(
             title:
-                Text(author.name, maxLines: 2, style: TextStyle(fontSize: 16))),
+                Text(author.name, maxLines: 2)),
       );
     }
     return Scaffold(
@@ -51,7 +51,7 @@ class AuthorWidgetState extends State<AuthorWidget>
               tabs: getTabs(),
             ),
             title:
-                Text(author.name, maxLines: 2, style: TextStyle(fontSize: 16)),
+                Text(author.name, maxLines: 2),
           ),
           body: getTabBarsView(),
         );
