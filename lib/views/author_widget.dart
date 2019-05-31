@@ -38,13 +38,18 @@ class AuthorWidgetState extends State<AuthorWidget>
   Widget build(BuildContext context) {
     if (sectionList == null) {
       return Scaffold(
-        appBar: AppBar(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(55),
+          child: AppBar(
             title:
-                Text(author.name, maxLines: 2)),
+                Text(author.name, maxLines: 2))
+        ),
       );
     }
     return Scaffold(
-          appBar: AppBar(
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(80),
+            child: AppBar(
             bottom: TabBar(
               isScrollable: true,
               controller: controller,
@@ -52,6 +57,7 @@ class AuthorWidgetState extends State<AuthorWidget>
             ),
             title:
                 Text(author.name, maxLines: 2),
+          ),
           ),
           body: getTabBarsView(),
         );

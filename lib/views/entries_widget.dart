@@ -37,9 +37,12 @@ class EntriesWidgetState extends State<EntriesWidget>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(55),
+          child: AppBar(
             title:
                 Text(topic.title, maxLines: 2)),
+        ),
         body: Column(
           children: <Widget>[
             Flexible(

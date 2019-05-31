@@ -57,8 +57,9 @@ class PagerWidgetState extends State<PagerWidget> {
                     ),
                   ),
                   onTap: () => {widget.onPath(widget.pager.quickIndexPath)})
-              : Flexible(
-                  child: Center(
+              : InkWell(
+                  child: SizedBox(
+                    width: 100,
                       child: Text(widget.pager.page.toString() +
                           ' / ' +
                           widget.pager.pageCount.toString(),
@@ -68,7 +69,7 @@ class PagerWidgetState extends State<PagerWidget> {
                             fontWeight: FontWeight.w600,
                             fontSize: 16
                           ))),
-                ),
+                          onTap: () => {print('hey')}),
           IconButton(
               color: Theme.of(context).brightness == Brightness.light ? Theme.of(context).accentColor : Colors.white,
               icon: Icon(Icons.keyboard_arrow_right),

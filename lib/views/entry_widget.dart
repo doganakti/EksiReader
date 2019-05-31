@@ -21,7 +21,7 @@ class EntryWidgetState extends State<EntryWidget> {
         child: Column(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(top: 5, left: 0, right: 0),
+          padding: EdgeInsets.only(top: 5, left: 0, right: 0, bottom: 0),
           child: Column(
             children: <Widget>[
               Align(
@@ -59,6 +59,7 @@ class EntryWidgetState extends State<EntryWidget> {
 
   Widget entryMenu() {
     return Container(
+      height: 40,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

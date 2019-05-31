@@ -39,7 +39,9 @@ class HomeWidgetState extends State<HomeWidget>
       );
     }
     return Scaffold(
-      appBar: AppBar(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: AppBar(
         bottom: TabBar(
           isScrollable: true,
           controller: controller,
@@ -65,7 +67,8 @@ class HomeWidgetState extends State<HomeWidget>
                 );
               })
         ],
-      ),
+      )
+      ) ,
       body: getTabBarsView(),
     );
   }
