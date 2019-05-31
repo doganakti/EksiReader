@@ -25,6 +25,7 @@ class AppState extends State<App> {
   Future<void> setup() async {
     themeKey = await FlutterKeychain.get(key: 'Tema');
     var fontSizeKey = await FlutterKeychain.get(key: 'FontSize');
+    fontFamily = await FlutterKeychain.get(key: 'FontFamily');
 
     if (themeKey == null) {
       await FlutterKeychain.put(key: 'Tema', value: 'Klasik');

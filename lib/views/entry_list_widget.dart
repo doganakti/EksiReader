@@ -111,6 +111,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   Widget getListView() {
     var listView = ListView.separated(
+      controller: scrollController,
       separatorBuilder: (context, index) => Divider(
         color: Colors.grey[600],
       ),

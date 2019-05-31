@@ -93,6 +93,22 @@
                 {
                     "title": "Montserrat",
                     "value": "Montserrat"
+                },
+                {
+                    "title": "Lato",
+                    "value": "Lato"
+                },
+                {
+                    "title": "Nunito",
+                    "value": "Nunito"
+                },
+                {
+                    "title": "Poppins",
+                    "value": "Poppins"
+                },
+                {
+                    "title": "Rubik",
+                    "value": "Rubik"
                 }
             ]
         },

@@ -65,6 +65,11 @@ class HomeWidgetState extends State<HomeWidget>
                   context,
                   MaterialPageRoute(builder: (context) => SettingsWidget()),
                 );
+              }),
+          IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                
               })
         ],
       )
