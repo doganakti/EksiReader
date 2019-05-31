@@ -10,7 +10,7 @@ class AppTheme {
         brightness: brightness,
         primaryColor: Color(0xff303030),
         primarySwatch: Colors.blueGrey,
-        accentColor: Colors.orange,
+        accentColor: Colors.deepOrangeAccent,
         scaffoldBackgroundColor: Color(0xff303030),
         appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
 

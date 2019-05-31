@@ -8,10 +8,12 @@ import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
 import 'package:eksi_reader/models/pager.dart';
+import 'package:eksi_reader/models/query_result.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/settings_section.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/results/result.dart';
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:html/dom.dart';
@@ -46,10 +48,11 @@ class EksiService {
 
   Future<List<SettingsSection>> getSettingsSectionList() async {
     var configuration = await getConfiguration();
-    for(var section in configuration.settingsSections) {
+    for (var section in configuration.settingsSections) {
       var value = await FlutterKeychain.get(key: section.key);
       if (value == null) {
-        await FlutterKeychain.put(key: section.key, value: section.selectedValue);
+        await FlutterKeychain.put(
+            key: section.key, value: section.selectedValue);
       } else {
         section.selectedValue = value;
       }
@@ -59,7 +62,7 @@ class EksiService {
 
   Future<Result> getTopicList({String path: '/basliklar/gundem'}) async {
     List<Topic> topicList = new List<Topic>();
-    var document = await _client.get(path: path);
+    var document = await _client.getDocument(path: path);
     var content = document.getElementById('content');
     var elementList = content.querySelectorAll('ul.topic-list > li');
     for (var element in elementList) {
@@ -141,7 +144,7 @@ class EksiService {
         subContent = true;
         path = EksiUri.getAuthorSectionPath(author, authorSection, authorPage);
       }
-      var document = await _client.get(path: path, subContent: subContent);
+      var document = await _client.getDocument(path: path, subContent: subContent);
       var topic = document.getElementById('topic');
       var topicContainer = topic.getElementsByTagName('h1')[0];
       var topicModel = new Topic(topicContainer.attributes['data-title'], null,
@@ -228,7 +231,7 @@ class EksiService {
   Future<Result<Section>> getAuthorSections({Author author}) async {
     List<Section> sectionList = new List<Section>();
     try {
-      var document = await _client.get(path: author.path);
+      var document = await _client.getDocument(path: author.path);
       var content = document.getElementById("profile-stats-section-nav");
       var aList = content.getElementsByTagName('a');
       for (var a in aList) {
@@ -260,5 +263,34 @@ class EksiService {
 
   Future<bool> login() async {
     return await _client.login();
+  }
+
+  Future<List<Topic>> autoComplete(String input) async {
+    try {
+      var data = await _client.getResult(path: '/autocomplete/query?q=$input', subContent: true);
+      var titles = new List<String>();
+      var topics = new List<Topic>();
+      for(var item in data['Titles']) {
+        var topic = new Topic(item, null, '/?q=$item', null);
+        //topic.icon = Icon(Icons.text_fields);
+        topics.add(topic);
+      }
+      var nicks = new List<String>();
+      for(var item in data['Nicks']) {
+        var topic =new Topic('@$item', null, '/biri/$item', null);
+        //topic.icon = Icon(Icons.account_circle);
+        topics.add(topic);
+      }
+      QueryResult result = new QueryResult(
+        titles: titles,
+        nicks: nicks,
+        query: data['Query'] as String
+      );
+
+      return topics;  
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }

@@ -39,34 +39,44 @@ class AuthorWidgetState extends State<AuthorWidget>
     if (sectionList == null) {
       return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(55),
-          child: AppBar(
-            title:
-                Text(author.name, maxLines: 2))
-        ),
+            preferredSize: Size.fromHeight(55),
+            child: AppBar(title: Text(author.name, maxLines: 2))),
       );
     }
     return Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(80),
-            child: AppBar(
-            bottom: TabBar(
-              isScrollable: true,
-              controller: controller,
-              tabs: getTabs(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(90),
+        child: AppBar(
+          bottom: TabBar(
+            isScrollable: true,
+            controller: controller,
+            tabs: getTabs(),
+          ),
+          title: Text(author.name, maxLines: 2),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.more_horiz),
+              onPressed: () {
+                print('hey');
+              },
             ),
-            title:
-                Text(author.name, maxLines: 2),
-          ),
-          ),
-          body: getTabBarsView(),
-        );
+            IconButton(
+              icon: Icon(Icons.message),
+              onPressed: () {
+                print('hey');
+              },
+            )
+          ],
+        ),
+      ),
+      body: getTabBarsView(),
+    );
   }
 
   getTabs() {
     var tabList = new List<Tab>();
     if (sectionList != null) {
-      for(var section in sectionList) {
+      for (var section in sectionList) {
         var tab = Tab(text: section.title);
         tabList.add(tab);
       }
@@ -77,22 +87,18 @@ class AuthorWidgetState extends State<AuthorWidget>
   getTabBarsView() {
     var entryWidgets = new List<Widget>();
     if (sectionList != null) {
-      for(var section in sectionList) {
+      for (var section in sectionList) {
         var widget = Center(
-          child: EntryListWidget(
-            path: section.path,
-            author: author,
-            section: section,
-            page: 1,
-          )
-        );
+            child: EntryListWidget(
+          path: section.path,
+          author: author,
+          section: section,
+          page: 1,
+        ));
         entryWidgets.add(widget);
       }
     }
-    var tabbarView = TabBarView(
-      controller: controller,
-      children: entryWidgets
-    );
+    var tabbarView = TabBarView(controller: controller, children: entryWidgets);
     return tabbarView;
   }
 }

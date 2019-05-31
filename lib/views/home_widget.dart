@@ -2,6 +2,7 @@ import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/login_widget.dart';
+import 'package:eksi_reader/views/search_widget.dart';
 import 'package:eksi_reader/views/settings_widget.dart';
 import 'package:eksi_reader/views/topic_list.widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,40 +41,39 @@ class HomeWidgetState extends State<HomeWidget>
     }
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80),
-        child: AppBar(
-        bottom: TabBar(
-          isScrollable: true,
-          controller: controller,
-          tabs: getTabs(),
-        ),
-        leading: IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LoginWidget()),
-              );
-            }),
-        title: Text('EksiReader', maxLines: 2),
-        actions: <Widget>[
-          // action button
-          IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsWidget()),
-                );
-              }),
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                
-              })
-        ],
-      )
-      ) ,
+          preferredSize: Size.fromHeight(90),
+          child: AppBar(
+            bottom: TabBar(
+              isScrollable: true,
+              controller: controller,
+              tabs: getTabs(),
+            ),
+            leading: IconButton(
+                icon: Icon(Icons.account_circle),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginWidget()),
+                  );
+                }),
+            title: Text('EksiReader', maxLines: 2),
+            actions: <Widget>[
+              // action button
+              IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsWidget()),
+                    );
+                  }),
+              IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    showSearch(context: context, delegate: SearchWidget());
+                  })
+            ],
+          )),
       body: getTabBarsView(),
     );
   }

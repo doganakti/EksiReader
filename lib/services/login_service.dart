@@ -25,7 +25,7 @@ class LoginService {
   }
 
   Future<String> getToken() async {
-    var document = await _client.get(path: '/giris', cacheCookies: true);
+    var document = await _client.getDocument(path: '/giris', cacheCookies: true);
     var content = document.querySelector("#content-body");
     var formContainer = content.querySelector(".form-container");
     var tokenInput = formContainer.querySelector("input");

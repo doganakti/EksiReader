@@ -31,7 +31,7 @@ class EksiClient {
     });
   }
 
-  Future<Document> get(
+  Future<Document> getDocument(
       {String path: '/basliklar/gundem', bool cacheCookies: false, bool subContent}) async {
     var client = new Dio();
     var headers = _headers;
@@ -47,6 +47,23 @@ class EksiClient {
     }
     var document = parse(response.data);
     return document;
+  }
+
+  Future<dynamic> getResult(
+      {String path: '/basliklar/gundem', bool cacheCookies: false, bool subContent}) async {
+    var client = new Dio();
+    var headers = _headers;
+    if (subContent != null) {
+      headers['x-requested-with'] = 'XMLHttpRequest';
+    } else {
+      headers['x-requested-with'] = null;
+    }
+    var response = await client.get(_url + path, options: Options(headers: headers));
+    if (cacheCookies) {
+      var setCookies = response.headers['set-cookie'];
+      setHeaders(setCookies);
+    }
+    return response.data;
   }
 
   void setHeaders(List<String> rawCookies) {
@@ -75,7 +92,7 @@ class EksiClient {
   }
 
   Future<String> getToken() async {
-    var document = await get(path: '/giris', cacheCookies: true);
+    var document = await getDocument(path: '/giris', cacheCookies: true);
     var content = document.querySelector("#content-body");
     var formContainer = content.querySelector(".form-container");
     var tokenInput = formContainer.querySelector("input");
