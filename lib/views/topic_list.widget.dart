@@ -156,7 +156,7 @@ class TopicListWidgetState extends State<TopicListWidget> {
       alignment: Alignment.bottomCenter,
       child: Container(
         alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 5),
+        padding: EdgeInsets.only(bottom: 15),
         child: Container(
             height: 50,
             child: widget.pager != null

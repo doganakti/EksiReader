@@ -137,7 +137,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
       alignment: Alignment.bottomCenter,
       child: Container(
         alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(bottom: 5),
+        padding: EdgeInsets.only(bottom: 15),
         child: Container(
             height: 50,
             child: pager != null
