@@ -61,7 +61,7 @@ class EksiService {
     return configuration.settingsSections;
   }
 
-  Future<Result> getTopicList({String path: '/basliklar/gundem'}) async {
+  Future<Result> getTopicList({String path = '/basliklar/gundem'}) async {
     List<Topic> topicList = new List<Topic>();
     var document = await _client.getDocument(path: path);
     var content = document.getElementById('content');
@@ -71,13 +71,13 @@ class EksiService {
         if (element.text != null) {
           var text = element.text.trim();
           var urlElement = element.querySelector('a');
-          if (text != null && text.length > 0 && urlElement != null) {
+          if (text != null && text.isNotEmpty && urlElement != null) {
             var url = urlElement.attributes['href'];
             var badgeElement = element.querySelector('small');
             var badge = '';
             var detailElements = element.getElementsByClassName("detail");
             var detail = "";
-            if (detailElements.length > 0) {
+            if (detailElements.isNotEmpty) {
               detail = detailElements[0].text;
               var index = text.lastIndexOf(detail);
               text = text.substring(0, index);
@@ -89,7 +89,7 @@ class EksiService {
               if (detail != "") {}
             }
             var topic =
-                new Topic(text, detail.length > 0 ? detail : null, url, badge);
+                new Topic(text, detail.isNotEmpty ? detail : null, url, badge);
             topicList.add(topic);
           }
         }
@@ -109,15 +109,15 @@ class EksiService {
   Pager getPager(
       List<Element> quickIndexContainer, List<Element> pagerContainer) {
     var pager = new Pager();
-    if (quickIndexContainer != null && quickIndexContainer.length > 0) {
+    if (quickIndexContainer != null && quickIndexContainer.isNotEmpty) {
       var quickIndexContent = quickIndexContainer[0].getElementsByTagName('a');
-      if (quickIndexContent.length > 0) {
+      if (quickIndexContent.isNotEmpty) {
         var quickIndexPath = quickIndexContent[0].attributes['href'];
         var quickIndexTitle = quickIndexContent[0].text;
         pager.quickIndexPath = quickIndexPath;
         pager.quickIndexText = quickIndexTitle.replaceAll(' ...', '');
       }
-    } else if (pagerContainer.length > 0) {
+    } else if (pagerContainer.isNotEmpty) {
       pager.pageCount =
           int.parse(pagerContainer[0].attributes['data-pagecount']);
       pager.page = int.parse(pagerContainer[0].attributes['data-currentpage']);
@@ -130,7 +130,8 @@ class EksiService {
       bool subContent,
       Author author,
       Section authorSection,
-      int authorPage}) async {
+      int authorPage,
+      Pager pager}) async {
     var result = new Result<Entry>();
     try {
       if (path.contains('/biri/') && author == null) {
@@ -145,6 +146,12 @@ class EksiService {
         subContent = true;
         path = EksiUri.getAuthorSectionPath(author, authorSection, authorPage);
       }
+
+      if (path.contains('nick=')) {
+        subContent = true;
+        author = EksiUri.getAuthorFromPath(path);
+      }
+
       var document = await _client.getDocument(path: path, subContent: subContent);
       var topic = document.getElementById('topic');
       var topicContainer = topic.getElementsByTagName('h1')[0];
@@ -153,12 +160,30 @@ class EksiService {
       topicModel.path = EksiUri.resetPath(topicModel.path, path);
       var topicItemList = topic.getElementsByClassName('topic-item');
       var entryList = new List<Entry>();
-      if (topicItemList.length > 0) {
+      if (author != null && subContent) {
+        try {
+          var entryCount = document.getElementsByTagName('h1')[0].getElementsByTagName('small')[0].text.trim().replaceAll('(', '').replaceAll(')', '');
+          var remaining = int.parse(entryCount) % 10 > 0 ? 1 : 0;
+          int division = int.parse(entryCount) ~/ 10;
+          var pageCount = division + remaining;
+          if (authorPage == null) {
+            authorPage = 1;
+          }
+          var page = EksiUri.getPageFromPath(path);
+          result.pager = Pager(page: page, pageCount: pageCount);
+        } catch (e) {
+
+          pager.page = EksiUri.getPageFromPath(path);;
+          result.pager = pager;
+        }
+
+      }
+      if (topicItemList.isNotEmpty) {
         for (var topicItem in topicItemList) {
           var h1 = topicItem.getElementsByTagName('h1')[0];
           var entryItemList =
               topicItem.querySelectorAll('#entry-item-list > li');
-          if (entryItemList.length > 0) {
+          if (entryItemList.isNotEmpty) {
             var topicTitle = h1.attributes['data-title'];
             var topicPath = h1.getElementsByTagName('a')[0].attributes['href'];
             var topic = new Topic(topicTitle, null, topicPath, null);
@@ -171,7 +196,7 @@ class EksiService {
       } else {
         var entryItemList = topic.querySelectorAll(
             '#entry-item-list > li'); //topic.getElementsByTagName('ul')[0].getElementsByTagName('li');
-        if (entryItemList.length > 0) {
+        if (entryItemList.isNotEmpty) {
           for (var entryItem in entryItemList) {
             var entry = getEntry(entryItem, null);
             entryList.add(entry);
@@ -180,9 +205,12 @@ class EksiService {
       }
       result.itemList = entryList;
       result.topic = topicModel;
-      var pagerContainer = document.getElementsByClassName('pager');
-      result.pager = getPager(null, pagerContainer);
+      if (result.pager == null) {
+        var pagerContainer = document.getElementsByClassName('pager');
+        result.pager = getPager(null, pagerContainer);
+      }
     } catch (e) {
+      print(e);
       result.itemList = new List<Entry>();
     }
     return result;
@@ -256,9 +284,9 @@ class EksiService {
   }
 
   Future<Result<Entry>> getAuthorEntryList(
-      Author author, Section section, int page) async {
+      {Author author, Section section, int page, Pager pager}) async {
     var path = EksiUri.getAuthorSectionPath(author, section, page);
-    var result = await getEntryList(path: path, subContent: true);
+    var result = await getEntryList(path: path, subContent: true, authorPage: page, pager:pager);
     return result;
   }
   

@@ -32,7 +32,7 @@ class HomeWidgetState extends State<HomeWidget>
     super.didUpdateWidget(oldWidget);
     widget.sectionList = oldWidget.sectionList;
   }
-
+  
   @override
   Widget build(BuildContext context) {
     if (widget.sectionList == null) {

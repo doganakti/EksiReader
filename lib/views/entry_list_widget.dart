@@ -66,6 +66,10 @@ class EntryListWidgetState extends State<EntryListWidget> {
     super.didUpdateWidget(oldWidget);
     widget.path = oldWidget.path;
     widget.entryList = oldWidget.entryList;
+    widget.section = oldWidget.section;
+    widget.page = oldWidget.page;
+    widget.author = oldWidget.author;
+    widget.separator = oldWidget.separator;
   }
 
   loadData(String path) async {
@@ -73,11 +77,13 @@ class EntryListWidgetState extends State<EntryListWidget> {
     var result = widget.author == null
         ? await service.getEntryList(path: path)
         : await service.getAuthorEntryList(
-            widget.author, widget.section, widget.page);
+            author: widget.author, section: widget.section, page: widget.page, pager: pager);
     setState(() {
       widget.entryList = result.itemList;
       pager = result.pager;
-      widget.path = result.topic?.path;
+      if (!path.contains('nick=')) {
+        widget.path = result.topic?.path;
+      }
       loading = false;
       noContent = widget.entryList?.length == 0;
     });
@@ -160,7 +166,10 @@ class EntryListWidgetState extends State<EntryListWidget> {
       loading = true;
     });
     var path = EksiUri.getPathForPage(widget.path, page);
-    widget.path = path;
+    if(!path.contains('nick=')) {
+      widget.path = path;
+    }
+    widget.page = page;
     loadData(path);
     scrollToTop();
   }

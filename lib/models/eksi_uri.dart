@@ -54,6 +54,17 @@ class EksiUri {
     return '${section.path}&p=$page';
   }
 
+  static Author getAuthorFromPath(String path) {
+    var uri = Uri.parse(path);
+    Author author;
+    for(var key in uri.queryParameters.keys) {
+      if (key == 'nick') {
+        author = Author(name: uri.queryParameters[key], path: path);
+      }
+    }
+    return author;
+  }
+
   static String resetPath(String rootPath, String fullPath) {
     var uri = Uri.parse(fullPath);
     var parameters = new Map<String, String>();
