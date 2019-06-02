@@ -46,18 +46,22 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Row(),
-        Flexible(
-            child: Stack(
-          children: <Widget>[
-            getMainContent(),
-            getProgress(),
-          ],
-        )),
-        getPagerWidget(),
-      ],
+    return RefreshIndicator(
+      child: Column(
+        children: <Widget>[
+          Row(),
+          Flexible(
+              child: Stack(
+            children: <Widget>[
+              getMainContent(),
+              getProgress(),
+            ],
+          )),
+          getPagerWidget(),
+        ],
+      ), onRefresh: () async {
+        await loadData(widget.path);
+      },
     );
   }
 
@@ -78,7 +82,10 @@ class EntryListWidgetState extends State<EntryListWidget> {
     var result = widget.author == null
         ? await service.getEntryList(path: path)
         : await service.getAuthorEntryList(
-            author: widget.author, section: widget.section, page: widget.page, pager: widget.pager);
+            author: widget.author,
+            section: widget.section,
+            page: widget.page,
+            pager: widget.pager);
     setState(() {
       widget.entryList = result.itemList;
       widget.pager = result.pager;
@@ -118,20 +125,19 @@ class EntryListWidgetState extends State<EntryListWidget> {
 
   Widget getListView() {
     var listView = ListView.separated(
-      controller: scrollController,
-      separatorBuilder: (context, index) => Divider(
-        color: Colors.grey[600],
-      ),
-      itemCount: widget.entryList.length,
-      itemBuilder: (context, index) {
-        var entry = widget.entryList[index];
-        entry.onUrl = handleOnUrl;
-        return ListTile(
-          title: EntryWidget(
-          entry: entry, separator: widget.entryList.last.id != entry.id),
-        );
-      }
-    );
+        controller: scrollController,
+        separatorBuilder: (context, index) => Divider(
+              color: Colors.grey[600],
+            ),
+        itemCount: widget.entryList.length,
+        itemBuilder: (context, index) {
+          var entry = widget.entryList[index];
+          entry.onUrl = handleOnUrl;
+          return ListTile(
+            title: EntryWidget(
+                entry: entry, separator: widget.entryList.last.id != entry.id),
+          );
+        });
     return listView;
   }
 
@@ -167,7 +173,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
       loading = true;
     });
     var path = EksiUri.getPathForPage(widget.path, page);
-    if(!path.contains('nick=')) {
+    if (!path.contains('nick=')) {
       widget.path = path;
     }
     widget.page = page;
