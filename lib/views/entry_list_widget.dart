@@ -24,6 +24,7 @@ class EntryListWidget extends StatefulWidget {
   int page;
   List<Entry> entryList;
   bool separator;
+  Pager pager;
   EntryListWidget({this.path, this.author, this.section, this.page: 1});
   @override
   EntryListWidgetState createState() => EntryListWidgetState();
@@ -34,7 +35,6 @@ class EntryListWidgetState extends State<EntryListWidget> {
   bool loading = true;
   bool noContent = false;
   ScrollController scrollController;
-  Pager pager;
 
   @override
   void initState() {
@@ -70,6 +70,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     widget.page = oldWidget.page;
     widget.author = oldWidget.author;
     widget.separator = oldWidget.separator;
+    widget.pager = oldWidget.pager;
   }
 
   loadData(String path) async {
@@ -77,15 +78,15 @@ class EntryListWidgetState extends State<EntryListWidget> {
     var result = widget.author == null
         ? await service.getEntryList(path: path)
         : await service.getAuthorEntryList(
-            author: widget.author, section: widget.section, page: widget.page, pager: pager);
+            author: widget.author, section: widget.section, page: widget.page, pager: widget.pager);
     setState(() {
       widget.entryList = result.itemList;
-      pager = result.pager;
+      widget.pager = result.pager;
       if (!path.contains('nick=')) {
         widget.path = result.topic?.path;
       }
       loading = false;
-      noContent = widget.entryList?.length == 0;
+      noContent = widget.entryList.isEmpty;
     });
   }
 
@@ -146,8 +147,8 @@ class EntryListWidgetState extends State<EntryListWidget> {
         padding: EdgeInsets.only(bottom: 15),
         child: Container(
             height: 50,
-            child: pager != null
-                ? PagerWidget(pager, handleOnMore, handleOnPage)
+            child: widget.pager != null
+                ? PagerWidget(widget.pager, handleOnMore, handleOnPage)
                 : Container(
                     height: 1,
                   )),
