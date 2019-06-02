@@ -67,18 +67,25 @@ class EksiClient {
   }
 
   void setHeaders(List<String> rawCookies) {
-    String cookieString = '';
-    for (var rawCookie in rawCookies) {
-      int index = rawCookie.indexOf(';');
-      cookieString = cookieString +
-          ((index == -1) ? rawCookie : rawCookie.substring(0, index)) +
-          ';';
+    if (rawCookies != null) {
+      String cookieString = '';
+      for (var rawCookie in rawCookies) {
+        int index = rawCookie.indexOf(';');
+        cookieString = cookieString +
+            ((index == -1) ? rawCookie : rawCookie.substring(0, index)) +
+            ';';
+      }
+      _headers = {
+        'user-agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
+        'cookie': cookieString
+      };
+    } else {
+      _headers = {
+        'user-agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'
+      };
     }
-    _headers = {
-      'user-agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36',
-      'cookie': cookieString
-    };
   }
 
   Future<User> getUser() async {
@@ -89,6 +96,11 @@ class EksiClient {
     } else {
       return null;
     }
+  }
+
+  Future clearUser() async {
+    await FlutterKeychain.remove(key: 'username');
+    await FlutterKeychain.remove(key: 'password');
   }
 
   Future<String> getToken() async {
@@ -127,6 +139,11 @@ class EksiClient {
       setHeaders(setCookies);
     }
     return true;
+  }
+
+  Future logout() async {
+    await clearUser();
+    setHeaders(null);
   }
 
   Future<dynamic> readResponse(HttpClientResponse response) {

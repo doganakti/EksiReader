@@ -106,7 +106,7 @@ class TopicsWidgetState extends State<TopicsWidget>
         appBar: new AppBar(
             leading: IconButton(
                 icon: Icon(Icons.account_circle),
-                onPressed: () async {
+                onPressed: () {
                   print("hey");
                   if (loginWidget == null) {
                     loginWidget = new LoginWidget();

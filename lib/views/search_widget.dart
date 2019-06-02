@@ -6,12 +6,16 @@ import 'package:flutter/material.dart';
 
 class SearchWidget extends SearchDelegate<Topic> {
   EksiService service = new EksiService();
+  Topic searchTopic;
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
         icon: Icon(Icons.clear),
         onPressed: () {
+          if (query == '') {
+            close(context, null);
+          }
           query = '';
         },
       ),
@@ -30,85 +34,60 @@ class SearchWidget extends SearchDelegate<Topic> {
 
   @override
   Widget buildResults(BuildContext context) {
-    if (query.length < 3) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: Text(
-              "Search term must be longer than two letters.",
-            ),
-          )
-        ],
-      );
-    }
-
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text('Hey'),
-        );
-      },
-    );
-
+    // close(context, null);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //       builder: (context) => EntriesWidget(searchTopic),
+    //       fullscreenDialog: false,
+    //       maintainState: false),
+    // );
+    return getListView();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     // This method is called everytime the search term changes.
     // If you want to add search suggestions as the user enters their search term, this is the place to do that.
-    if (query.length < 3) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: Text(
-              "Search term must be longer than two letters.",
-            ),
-          )
-        ],
-      );
-    }
+    return getListView();
+  }
 
+  Widget getListView() {
     return FutureBuilder<List<Topic>>(
       future: service.autoComplete(query),
       builder: (context, snapshot) {
+        searchTopic = snapshot.data != null && snapshot.data.length > 0
+            ? snapshot.data[0]
+            : null;
         return ListView.builder(
           itemCount: snapshot.data != null ? snapshot.data.length : 0,
           itemBuilder: (context, index) {
             var topic = snapshot.data[index];
-            return snapshot.data != null ? ListTile(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  topic.icon,
-                  Flexible(
-                    child: Container(
-                      padding: EdgeInsets.only(left:15),
-                      child: Text(topic.title),
-                    )
-                  )
-                ],
-              ),
-              onTap: () {
-                
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EntriesWidget(topic)),
-                  );
-              }
-            ): Row();
+            return snapshot.data != null
+                ? ListTile(
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        topic.icon,
+                        Flexible(
+                            child: Container(
+                          padding: EdgeInsets.only(left: 15),
+                          child: Text(topic.title),
+                        ))
+                      ],
+                    ),
+                    onTap: () {
+                      close(context, null);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EntriesWidget(topic),
+                            fullscreenDialog: false,
+                            maintainState: false),
+                      );
+                    })
+                : Row();
           },
-        );
-      },
-    );
-
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text('Hey'),
         );
       },
     );

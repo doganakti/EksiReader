@@ -12,6 +12,7 @@ import 'package:eksi_reader/models/query_result.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/settings_section.dart';
 import 'package:eksi_reader/models/topic.dart';
+import 'package:eksi_reader/models/user.dart';
 import 'package:eksi_reader/results/result.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -260,36 +261,81 @@ class EksiService {
     var result = await getEntryList(path: path, subContent: true);
     return result;
   }
+  
+  Future<User> setCredentials(String userName, String password) async {
+    await FlutterKeychain.put(key: 'username', value: userName);
+    await FlutterKeychain.put(key: 'password', value: password);
+    return User(login: userName, password: password);
+  }
 
-  Future<bool> login() async {
-    return await _client.login();
+  Future<Author> login() async {
+    await _client.login();
+    return await getAuthor();
+  }
+
+  Future<bool> logout() async {
+    return await _client.logout();
+  }
+
+  Future<User> getUser() async {
+    return await _client.getUser();
+  }
+
+  Future<Author> getAuthorDetail({Author author}) async {
+    if (author == null) {
+      author = await getAuthor();
+    }
+    if (author != null) {
+      var document = await _client.getDocument(path: '/biri/${author.name}');
+      var userBadgesContainer = document.getElementById('user-badges');
+      var badgeElements = userBadgesContainer.getElementsByTagName('li');
+      author.badges = List<String>();
+      for(var badgeElement in badgeElements) {
+        author.badges.add(badgeElement.text.trim());
+      }
+
+      var userEntryStatsContainer = document.getElementById('user-entry-stats');
+      var statElements = userEntryStatsContainer.getElementsByTagName('li');
+      var statString = '';
+      for(var stat in statElements) {
+        statString = statString + stat.text.trim() + ' · ';
+      }
+      statString = statString.replaceRange(statString.length - 2, statString.length, '');
+      author.stats = statString;
+      author.path = '/biri/${author.name}';
+    }
+    return author;
   }
 
   Future<List<Topic>> autoComplete(String input) async {
     try {
       var data = await _client.getResult(path: '/autocomplete/query?q=$input', subContent: true);
-      var titles = new List<String>();
       var topics = new List<Topic>();
       for(var item in data['Titles']) {
         var topic = new Topic(item, null, '/?q=$item', null);
-        //topic.icon = Icon(Icons.text_fields);
         topics.add(topic);
       }
-      var nicks = new List<String>();
       for(var item in data['Nicks']) {
-        var topic =new Topic('@$item', null, '/biri/$item', null);
-        //topic.icon = Icon(Icons.account_circle);
+        var topic = new Topic('@$item', null, '/biri/$item', null);
         topics.add(topic);
       }
-      QueryResult result = new QueryResult(
-        titles: titles,
-        nicks: nicks,
-        query: data['Query'] as String
-      );
-
       return topics;  
     } catch (e) {
       print(e);
+      return null;
+    }
+  }
+  
+  Future<Author> getAuthor() async {
+    try {
+      var document = await _client.getDocument(path: '/');
+      var scripts = document.getElementsByTagName('script');
+      var dataLayer = scripts.firstWhere((o) => o.text.contains('dataLayer'));
+      var data = dataLayer.text.replaceAll('dataLayer = [', '').replaceAll('];', '').replaceAll("'", '"').replaceAll(',\n  ', ',').replaceAll('"",}', '""}').trim();
+      Map<String, dynamic> valueMap = json.decode(data);
+      var login = valueMap['eauthor'];
+      return login != '' ? Author(name: login) : null;
+    } catch (e) {
       return null;
     }
   }

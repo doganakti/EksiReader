@@ -1,5 +1,7 @@
 class User {
   String login;
   String password;
-  User({this.login, this.password});
+  String nick;
+  List<String> badges;
+  User({this.login, this.password, this.nick});
 }

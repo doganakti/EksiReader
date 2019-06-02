@@ -1,5 +1,6 @@
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:eksi_reader/views/account_widget.dart';
 import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/login_widget.dart';
 import 'package:eksi_reader/views/search_widget.dart';
@@ -36,10 +37,11 @@ class HomeWidgetState extends State<HomeWidget>
   Widget build(BuildContext context) {
     if (widget.sectionList == null) {
       return Scaffold(
-        body: LoadingWidget(),
+        body: Container()//LoadingWidget(),
       );
     }
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(90),
           child: AppBar(
@@ -51,10 +53,10 @@ class HomeWidgetState extends State<HomeWidget>
             leading: IconButton(
                 icon: Icon(Icons.account_circle),
                 onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginWidget()),
-                  );
+                  var author = await service.getAuthor();
+                  author = await service.getAuthorDetail(author: author);
+                  var accountWidget = AccountWidget();
+                  accountWidget.presentModal(context, user: author);
                 }),
             title: Text('EksiReader', maxLines: 2),
             actions: <Widget>[
@@ -83,6 +85,7 @@ class HomeWidgetState extends State<HomeWidget>
     widget.sectionList = await service.getSectionList();
     controller =
         new TabController(length: widget.sectionList.length, vsync: this);
+    await service.getAuthorDetail();
     setState(() {});
   }
 
