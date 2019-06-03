@@ -1,6 +1,7 @@
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
+import 'package:eksi_reader/models/more.dart';
 import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/models/topic.dart';
@@ -25,6 +26,7 @@ class EntryListWidget extends StatefulWidget {
   List<Entry> entryList;
   bool separator;
   Pager pager;
+  More more;
   EntryListWidget({this.path, this.author, this.section, this.page: 1});
   @override
   EntryListWidgetState createState() => EntryListWidgetState();
@@ -59,7 +61,8 @@ class EntryListWidgetState extends State<EntryListWidget> {
           )),
           getPagerWidget(),
         ],
-      ), onRefresh: () async {
+      ),
+      onRefresh: () async {
         await loadData(widget.path);
       },
     );
@@ -75,6 +78,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     widget.author = oldWidget.author;
     widget.separator = oldWidget.separator;
     widget.pager = oldWidget.pager;
+    widget.more = oldWidget.more;
   }
 
   loadData(String path) async {
@@ -89,6 +93,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     setState(() {
       widget.entryList = result.itemList;
       widget.pager = result.pager;
+      widget.more = result.more;
       if (!path.contains('nick=')) {
         widget.path = result.topic?.path;
       }
@@ -129,14 +134,39 @@ class EntryListWidgetState extends State<EntryListWidget> {
         separatorBuilder: (context, index) => Divider(
               color: Colors.grey[600],
             ),
-        itemCount: widget.entryList.length,
+        itemCount: widget.more != null ? widget.entryList.length : widget.entryList.length + 1,
         itemBuilder: (context, index) {
-          var entry = widget.entryList[index];
-          entry.onUrl = handleOnUrl;
-          return ListTile(
-            title: EntryWidget(
-                entry: entry, separator: widget.entryList.last.id != entry.id),
-          );
+          if (widget.more == null) {
+            var entry = widget.entryList[index];
+            entry.onUrl = handleOnUrl;
+            return ListTile(
+              title: EntryWidget(
+                  entry: entry,
+                  separator: widget.entryList.last.id != entry.id),
+            );
+          } else {
+            if (index == 0) {
+              return InkWell(
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.only(top:10),
+                    child: Text(widget.more.text, style: Theme.of(context).textTheme.display3),
+                  ),
+                ),
+                onTap: () async {
+                  await loadData(widget.more.path);
+                },
+              );
+            } else {
+              var entry = widget.entryList[index - 1];
+              entry.onUrl = handleOnUrl;
+              return ListTile(
+                title: EntryWidget(
+                    entry: entry,
+                    separator: widget.entryList.last.id != entry.id),
+              );
+            }
+          }
         });
     return listView;
   }

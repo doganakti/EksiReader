@@ -1,5 +1,6 @@
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/entry_content.dart';
+import 'package:eksi_reader/models/more.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

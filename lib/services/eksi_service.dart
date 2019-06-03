@@ -7,6 +7,7 @@ import 'package:eksi_reader/models/configuration.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
+import 'package:eksi_reader/models/more.dart';
 import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/query_result.dart';
 import 'package:eksi_reader/models/section.dart';
@@ -152,7 +153,8 @@ class EksiService {
         author = EksiUri.getAuthorFromPath(path);
       }
 
-      var document = await _client.getDocument(path: path, subContent: subContent);
+      var document =
+          await _client.getDocument(path: path, subContent: subContent);
       var topic = document.getElementById('topic');
       var topicContainer = topic.getElementsByTagName('h1')[0];
       var topicModel = new Topic(topicContainer.attributes['data-title'], null,
@@ -162,7 +164,13 @@ class EksiService {
       var entryList = new List<Entry>();
       if (author != null && subContent) {
         try {
-          var entryCount = document.getElementsByTagName('h1')[0].getElementsByTagName('small')[0].text.trim().replaceAll('(', '').replaceAll(')', '');
+          var entryCount = document
+              .getElementsByTagName('h1')[0]
+              .getElementsByTagName('small')[0]
+              .text
+              .trim()
+              .replaceAll('(', '')
+              .replaceAll(')', '');
           var remaining = int.parse(entryCount) % 10 > 0 ? 1 : 0;
           int division = int.parse(entryCount) ~/ 10;
           var pageCount = division + remaining;
@@ -172,10 +180,10 @@ class EksiService {
           var page = EksiUri.getPageFromPath(path);
           result.pager = Pager(page: page, pageCount: pageCount);
         } catch (e) {
-          pager.page = EksiUri.getPageFromPath(path);;
+          pager.page = EksiUri.getPageFromPath(path);
+          ;
           result.pager = pager;
         }
-
       }
       if (topicItemList.isNotEmpty) {
         for (var topicItem in topicItemList) {
@@ -207,6 +215,13 @@ class EksiService {
       if (result.pager == null) {
         var pagerContainer = document.getElementsByClassName('pager');
         result.pager = getPager(null, pagerContainer);
+      }
+
+      var moreLink = topic.getElementsByClassName('showall more-data');
+      if (moreLink.isNotEmpty) {
+        var morePath = moreLink[0].attributes['href'];
+        var moreString = moreLink[0].text.trim();
+        result.more = More(path: morePath, text: moreString);
       }
     } catch (e) {
       print(e);
@@ -285,10 +300,11 @@ class EksiService {
   Future<Result<Entry>> getAuthorEntryList(
       {Author author, Section section, int page, Pager pager}) async {
     var path = EksiUri.getAuthorSectionPath(author, section, page);
-    var result = await getEntryList(path: path, subContent: true, authorPage: page, pager:pager);
+    var result = await getEntryList(
+        path: path, subContent: true, authorPage: page, pager: pager);
     return result;
   }
-  
+
   Future<User> setCredentials(String userName, String password) async {
     await FlutterKeychain.put(key: 'username', value: userName);
     await FlutterKeychain.put(key: 'password', value: password);
@@ -317,17 +333,18 @@ class EksiService {
       var userBadgesContainer = document.getElementById('user-badges');
       var badgeElements = userBadgesContainer.getElementsByTagName('li');
       author.badges = List<String>();
-      for(var badgeElement in badgeElements) {
+      for (var badgeElement in badgeElements) {
         author.badges.add(badgeElement.text.trim());
       }
 
       var userEntryStatsContainer = document.getElementById('user-entry-stats');
       var statElements = userEntryStatsContainer.getElementsByTagName('li');
       var statString = '';
-      for(var stat in statElements) {
+      for (var stat in statElements) {
         statString = statString + stat.text.trim() + ' · ';
       }
-      statString = statString.replaceRange(statString.length - 2, statString.length, '');
+      statString =
+          statString.replaceRange(statString.length - 2, statString.length, '');
       author.stats = statString;
       author.path = '/biri/${author.name}';
     }
@@ -336,29 +353,36 @@ class EksiService {
 
   Future<List<Topic>> autoComplete(String input) async {
     try {
-      var data = await _client.getResult(path: '/autocomplete/query?q=$input', subContent: true);
+      var data = await _client.getResult(
+          path: '/autocomplete/query?q=$input', subContent: true);
       var topics = new List<Topic>();
-      for(var item in data['Titles']) {
+      for (var item in data['Titles']) {
         var topic = new Topic(item, null, '/?q=$item', null);
         topics.add(topic);
       }
-      for(var item in data['Nicks']) {
+      for (var item in data['Nicks']) {
         var topic = new Topic('@$item', null, '/biri/$item', null);
         topics.add(topic);
       }
-      return topics;  
+      return topics;
     } catch (e) {
       print(e);
       return null;
     }
   }
-  
+
   Future<Author> getAuthor() async {
     try {
       var document = await _client.getDocument(path: '/');
       var scripts = document.getElementsByTagName('script');
       var dataLayer = scripts.firstWhere((o) => o.text.contains('dataLayer'));
-      var data = dataLayer.text.replaceAll('dataLayer = [', '').replaceAll('];', '').replaceAll("'", '"').replaceAll(',\n  ', ',').replaceAll('"",}', '""}').trim();
+      var data = dataLayer.text
+          .replaceAll('dataLayer = [', '')
+          .replaceAll('];', '')
+          .replaceAll("'", '"')
+          .replaceAll(',\n  ', ',')
+          .replaceAll('"",}', '""}')
+          .trim();
       Map<String, dynamic> valueMap = json.decode(data);
       var login = valueMap['eauthor'];
       return login != '' ? Author(name: login) : null;

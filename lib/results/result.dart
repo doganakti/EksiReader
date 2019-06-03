@@ -1,3 +1,4 @@
+import 'package:eksi_reader/models/more.dart';
 import 'package:eksi_reader/models/pager.dart';
 import 'package:eksi_reader/models/topic.dart';
 
@@ -6,6 +7,7 @@ class Result<T> {
   T item;
   Pager pager;
   Topic topic;
+  More more;
 
   Result({this.item, this.itemList, this.pager, this.topic});
 }
