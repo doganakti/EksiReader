@@ -247,6 +247,7 @@ class EksiService {
     var id = entryItem.attributes['data-id'];
     var authorId = entryItem.attributes['data-author-id'];
     var favCount = entryItem.attributes['data-favorite-count'];
+    var liked = entryItem.attributes['data-isfavorite'];
     var entryContent = entryItem.getElementsByClassName('content')[0];
     var contentList = getEntryContentList(entryContent);
     var footer = entryItem.getElementsByTagName('footer')[0];
@@ -258,6 +259,7 @@ class EksiService {
         name: authorElement.text,
         path: authorElement.attributes['href']);
     var entry = new Entry(id, contentList, author, date, favCount, topic);
+    entry.liked = liked == 'true';
     return entry;
   }
 
@@ -402,5 +404,13 @@ class EksiService {
     } catch (e) {
       return null;
     }
+  }
+
+  Future<bool> like(String entryId) async {
+    return _client.like(entryId);
+  }
+
+  Future<bool> dislike(String entryId) async {
+    return _client.dislike(entryId);
   }
 }

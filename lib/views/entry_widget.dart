@@ -1,5 +1,6 @@
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/topic.dart';
+import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/author_widget.dart';
 import 'package:eksi_reader/views/entries_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -81,10 +82,22 @@ class EntryWidgetState extends State<EntryWidget> {
                               print('hey');
                             }),
                         IconButton(
-                            icon: Icon(Icons.favorite_border),
+                            icon: Icon(Icons.favorite_border, color: widget.entry.liked ? Theme.of(context).textTheme.display3.color : Theme.of(context).textTheme.display2.color),
                             iconSize: 16,
-                            onPressed: () {
+                            onPressed: () async {
                               print('hey');
+                              if (widget.entry.liked) {
+                                bool disLiked = await EksiService().dislike(widget.entry.id);
+                                widget.entry.liked = !disLiked;
+                                widget.entry.favCount = disLiked ? (int.parse(widget.entry.favCount) - 1).toString() : widget.entry.favCount;
+                              } else {
+                                bool liked = await EksiService().like(widget.entry.id);
+                                widget.entry.liked = liked;
+                                widget.entry.favCount = liked ? (int.parse(widget.entry.favCount) + 1).toString() : widget.entry.favCount;
+                              }
+                              setState(() {
+                                
+                              });
                             }),
                         Text(
                           widget.entry.favCount + ' favori',

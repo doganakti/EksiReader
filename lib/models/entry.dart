@@ -14,6 +14,7 @@ class Entry {
   String favCount;
   Function(String, String, String) onUrl;
   Topic topic;
+  bool liked;
 
   Entry(this.id, this.contentList, this.author, this.date, this.favCount, this.topic);
 

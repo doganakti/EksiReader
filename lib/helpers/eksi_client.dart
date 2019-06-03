@@ -154,4 +154,46 @@ class EksiClient {
     }, onDone: () => completer.complete(contents.toString()));
     return completer.future;
   }
+
+  Future<bool> like(String entryId) async {
+    var formData = {
+        'entryId': entryId
+      };
+      var headers = _headers;
+      headers['x-requested-with'] = 'XMLHttpRequest';
+      var dioClient = new Dio();
+      var response = await dioClient.post("https://eksisozluk.com/entry/favla",
+          data: formData,
+          options: Options(
+              headers: headers,
+              followRedirects: false,
+              validateStatus: (int status) {
+                print("status code = $status");
+                return status < 500;
+              },
+              contentType:
+                  ContentType.parse("application/x-www-form-urlencoded")));
+      return response.statusCode == 200;
+  }
+
+  Future<bool> dislike(String entryId) async {
+    var formData = {
+        'entryId': entryId
+      };
+      var dioClient = new Dio();
+      var headers = _headers;
+      headers['x-requested-with'] = 'XMLHttpRequest';
+      var response = await dioClient.post("https://eksisozluk.com/entry/favlama",
+          data: formData,
+          options: Options(
+              headers: headers,
+              followRedirects: false,
+              validateStatus: (int status) {
+                print("status code = $status");
+                return status < 500;
+              },
+              contentType:
+                  ContentType.parse("application/x-www-form-urlencoded")));
+      return response.statusCode == 200;
+  }
 }
