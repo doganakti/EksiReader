@@ -1,6 +1,9 @@
+import 'package:eksi_reader/models/author.dart';
+import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/query_result.dart';
 import 'package:eksi_reader/models/topic.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
+import 'package:eksi_reader/views/author_widget.dart';
 import 'package:eksi_reader/views/entries_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +59,7 @@ class SearchWidget extends SearchDelegate<Topic> {
     return FutureBuilder<List<Topic>>(
       future: service.autoComplete(query),
       builder: (context, snapshot) {
-        searchTopic = snapshot.data != null && snapshot.data.length > 0
+        searchTopic = snapshot.data != null && snapshot.data.isNotEmpty
             ? snapshot.data[0]
             : null;
         return ListView.builder(
@@ -78,13 +81,24 @@ class SearchWidget extends SearchDelegate<Topic> {
                     ),
                     onTap: () {
                       close(context, null);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EntriesWidget(topic),
-                            fullscreenDialog: false,
-                            maintainState: false),
-                      );
+                      if (topic.path.contains('/biri/')) {
+                        var author = Author(name: topic.title.replaceAll('@', ''), path: topic.path);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AuthorWidget(author),
+                              fullscreenDialog: false,
+                              maintainState: false),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EntriesWidget(topic),
+                              fullscreenDialog: false,
+                              maintainState: false),
+                        );
+                      }
                     })
                 : Row();
           },
