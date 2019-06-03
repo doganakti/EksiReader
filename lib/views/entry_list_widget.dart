@@ -133,12 +133,11 @@ class EntryListWidgetState extends State<EntryListWidget> {
     var listView = ListView.separated(
         controller: scrollController,
         separatorBuilder: (context, index) => Divider(
-              color: Colors.grey[600],
+              color: Colors.grey[700],
             ),
         itemCount: widget.more != null ? widget.entryList.length + 1 : widget.entryList.length,
         itemBuilder: (context, index) {
           if (widget.more == null) {
-            print(index);
             var entry = widget.entryList[index];
             entry.onUrl = handleOnUrl;
             return ListTile(
@@ -151,8 +150,9 @@ class EntryListWidgetState extends State<EntryListWidget> {
               return InkWell(
                 child: Center(
                   child: Container(
-                    padding: EdgeInsets.only(top:15),
-                    height: 40,
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(top:15, bottom: 5),
+                    height: 45,
                     child: Text(widget.more.text, style: Theme.of(context).textTheme.display3),
                   ),
                 ),
