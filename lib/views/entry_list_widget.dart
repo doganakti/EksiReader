@@ -1,4 +1,5 @@
 import 'package:eksi_reader/models/author.dart';
+import 'package:eksi_reader/models/disambiguation.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/more.dart';
@@ -27,6 +28,8 @@ class EntryListWidget extends StatefulWidget {
   bool separator;
   Pager pager;
   More more;
+  Disambiguation disambiguation;
+
   EntryListWidget({this.path, this.author, this.section, this.page: 1});
   @override
   EntryListWidgetState createState() => EntryListWidgetState();
@@ -79,6 +82,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     widget.separator = oldWidget.separator;
     widget.pager = oldWidget.pager;
     widget.more = oldWidget.more;
+    widget.disambiguation = oldWidget.disambiguation;
   }
 
   loadData(String path) async {
@@ -94,6 +98,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
       widget.entryList = result.itemList;
       widget.pager = result.pager;
       widget.more = result.more;
+      widget.disambiguation = result.disambiguation;
       if (!path.contains('nick=')) {
         widget.path = result.topic?.path;
         widget.path = EksiUri.removeFocusToFromPath(widget.path);
@@ -130,14 +135,18 @@ class EntryListWidgetState extends State<EntryListWidget> {
   }
 
   Widget getListView() {
+    var itemCount = widget.entryList.length;
+    if (widget.disambiguation != null || widget.more != null) {
+      itemCount = widget.entryList.length + 1;
+    }
     var listView = ListView.separated(
         controller: scrollController,
         separatorBuilder: (context, index) => Divider(
               color: Colors.grey[700],
             ),
-        itemCount: widget.more != null ? widget.entryList.length + 1 : widget.entryList.length,
+        itemCount: itemCount,
         itemBuilder: (context, index) {
-          if (widget.more == null) {
+          if (widget.more == null && widget.disambiguation == null) {
             var entry = widget.entryList[index];
             entry.onUrl = handleOnUrl;
             return ListTile(
@@ -147,19 +156,46 @@ class EntryListWidgetState extends State<EntryListWidget> {
             );
           } else {
             if (index == 0) {
-              return InkWell(
-                child: Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(top:15, bottom: 5),
-                    height: 45,
-                    child: Text(widget.more.text, style: Theme.of(context).textTheme.display3),
+              if (widget.more != null) {
+                return InkWell(
+                  child: Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 15, bottom: 5),
+                      height: 45,
+                      child: Text(widget.more.text,
+                          style: Theme.of(context).textTheme.display3),
+                    ),
                   ),
-                ),
-                onTap: () async {
-                  await loadData(widget.more.path);
-                },
-              );
+                  onTap: () async {
+                    await loadData(widget.more.path);
+                  },
+                );
+              } else if (widget.disambiguation != null) {
+                return InkWell(
+                  child: Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(top: 15, bottom: 5),
+                      height: 45,
+                      child: Text(
+                          'Aynı isimde "' +
+                              widget.disambiguation.title +
+                              '" başlığı da var',
+                          style: Theme.of(context).textTheme.display3),
+                    ),
+                  ),
+                  onTap: () async {
+                    var topic = Topic(widget.disambiguation.title, null,
+                        widget.disambiguation.path, null);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EntriesWidget(topic)),
+                    );
+                  },
+                );
+              }
             } else {
               var entry = widget.entryList[index - 1];
               entry.onUrl = handleOnUrl;

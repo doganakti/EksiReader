@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:eksi_reader/helpers/eksi_client.dart';
 import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/configuration.dart';
+import 'package:eksi_reader/models/disambiguation.dart';
 import 'package:eksi_reader/models/eksi_uri.dart';
 import 'package:eksi_reader/models/entry.dart';
 import 'package:eksi_reader/models/entry_content.dart';
@@ -185,6 +186,18 @@ class EksiService {
           result.pager = pager;
         }
       }
+
+      var disambiguation = document.getElementById('disambiguations');
+      if (disambiguation != null) {
+        try {
+          var disUrl = disambiguation.getElementsByTagName('a')[0].attributes['href'];
+          var disText = disambiguation.getElementsByTagName('a')[0].text.trim();
+          result.disambiguation = Disambiguation(path: disUrl, title: disText);
+        } catch (e) {
+          print(e);
+        }
+      }
+
       if (topicItemList.isNotEmpty) {
         for (var topicItem in topicItemList) {
           var h1 = topicItem.getElementsByTagName('h1')[0];
