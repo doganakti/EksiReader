@@ -41,7 +41,19 @@ class EksiUri {
     }
     
     var resultUri = Uri(path: uri.path, queryParameters: parameters);
-    return parameters.length > 0 ? resultUri.toString() : uri.path;
+    return parameters.isNotEmpty ? resultUri.toString() : uri.path;
+  }
+
+  static String removeFocusToFromPath(String path) {
+    var uri = Uri.parse(path);
+    var parameters = new Map<String, String>();
+    for(var key in uri.queryParameters.keys) {
+      if (key != 'focusto') {
+        parameters.putIfAbsent(key, () => uri.queryParameters[key]);
+      }
+    }
+    var resultUri = Uri(path: uri.path, queryParameters: parameters);
+    return parameters.isNotEmpty ? resultUri.toString() : uri.path;
   }
 
   static String getAuthorSectionPath(Author author, Section section, int page) {

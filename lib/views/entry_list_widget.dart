@@ -96,6 +96,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
       widget.more = result.more;
       if (!path.contains('nick=')) {
         widget.path = result.topic?.path;
+        widget.path = EksiUri.removeFocusToFromPath(widget.path);
       }
       loading = false;
       noContent = widget.entryList.isEmpty;
