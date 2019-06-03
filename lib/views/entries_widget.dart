@@ -5,6 +5,7 @@ import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/entry_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:share/share.dart';
 
 class EntriesWidget extends StatefulWidget {
   Topic topic;
@@ -40,8 +41,16 @@ class EntriesWidgetState extends State<EntriesWidget>
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(55),
           child: AppBar(
-            title:
-                Text(topic.title, maxLines: 2)),
+            title: Text(topic.title, maxLines: 2),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.share),
+                onPressed: () {
+                  Share.share('https://eksisozluk.com${widget.topic.path}');
+                },
+              )
+            ],
+          ),
         ),
         body: Column(
           children: <Widget>[

@@ -5,6 +5,7 @@ import 'package:eksi_reader/views/author_widget.dart';
 import 'package:eksi_reader/views/entries_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 class EntryWidget extends StatefulWidget {
   Entry entry;
@@ -116,7 +117,7 @@ class EntryWidgetState extends State<EntryWidget> {
                 IconButton(
                     icon: Icon(Icons.open_in_browser),
                     onPressed: () {
-                      print('hey');
+                      Share.share('https://eksisozluk.com/entry/${widget.entry.id}');
                     }),
               ],
             ),
