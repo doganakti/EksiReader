@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/user.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
@@ -32,7 +33,9 @@ class EksiClient {
   }
 
   Future<Document> getDocument(
-      {String path: '/basliklar/gundem', bool cacheCookies: false, bool subContent}) async {
+      {String path: '/basliklar/gundem',
+      bool cacheCookies: false,
+      bool subContent}) async {
     var client = new Dio();
     var headers = _headers;
     if (subContent != null) {
@@ -40,7 +43,8 @@ class EksiClient {
     } else {
       headers['x-requested-with'] = null;
     }
-    var response = await client.get(_url + path, options: Options(headers: headers));
+    var response =
+        await client.get(_url + path, options: Options(headers: headers));
     if (cacheCookies) {
       var setCookies = response.headers['set-cookie'];
       setHeaders(setCookies);
@@ -50,7 +54,9 @@ class EksiClient {
   }
 
   Future<dynamic> getResult(
-      {String path: '/basliklar/gundem', bool cacheCookies: false, bool subContent}) async {
+      {String path: '/basliklar/gundem',
+      bool cacheCookies: false,
+      bool subContent}) async {
     var client = new Dio();
     var headers = _headers;
     if (subContent != null) {
@@ -58,7 +64,8 @@ class EksiClient {
     } else {
       headers['x-requested-with'] = null;
     }
-    var response = await client.get(_url + path, options: Options(headers: headers));
+    var response =
+        await client.get(_url + path, options: Options(headers: headers));
     if (cacheCookies) {
       var setCookies = response.headers['set-cookie'];
       setHeaders(setCookies);
@@ -156,44 +163,57 @@ class EksiClient {
   }
 
   Future<bool> like(String entryId) async {
-    var formData = {
-        'entryId': entryId
-      };
-      var headers = _headers;
-      headers['x-requested-with'] = 'XMLHttpRequest';
-      var dioClient = new Dio();
-      var response = await dioClient.post("https://eksisozluk.com/entry/favla",
-          data: formData,
-          options: Options(
-              headers: headers,
-              followRedirects: false,
-              validateStatus: (int status) {
-                print("status code = $status");
-                return status < 500;
-              },
-              contentType:
-                  ContentType.parse("application/x-www-form-urlencoded")));
-      return response.statusCode == 200;
+    var formData = {'entryId': entryId};
+    var headers = _headers;
+    headers['x-requested-with'] = 'XMLHttpRequest';
+    var dioClient = new Dio();
+    var response = await dioClient.post("https://eksisozluk.com/entry/favla",
+        data: formData,
+        options: Options(
+            headers: headers,
+            followRedirects: false,
+            validateStatus: (int status) {
+              print("status code = $status");
+              return status < 500;
+            },
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.statusCode == 200;
   }
 
   Future<bool> dislike(String entryId) async {
-    var formData = {
-        'entryId': entryId
-      };
-      var dioClient = new Dio();
-      var headers = _headers;
-      headers['x-requested-with'] = 'XMLHttpRequest';
-      var response = await dioClient.post("https://eksisozluk.com/entry/favlama",
-          data: formData,
-          options: Options(
-              headers: headers,
-              followRedirects: false,
-              validateStatus: (int status) {
-                print("status code = $status");
-                return status < 500;
-              },
-              contentType:
-                  ContentType.parse("application/x-www-form-urlencoded")));
-      return response.statusCode == 200;
+    var formData = {'entryId': entryId};
+    var dioClient = new Dio();
+    var headers = _headers;
+    headers['x-requested-with'] = 'XMLHttpRequest';
+    var response = await dioClient.post("https://eksisozluk.com/entry/favlama",
+        data: formData,
+        options: Options(
+            headers: headers,
+            followRedirects: false,
+            validateStatus: (int status) {
+              print("status code = $status");
+              return status < 500;
+            },
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.statusCode == 200;
+  }
+
+  Future<bool> follow(Author author, bool follow) async {
+    var dioClient = new Dio();
+    var headers = _headers;
+    headers['x-requested-with'] = 'XMLHttpRequest';
+    var response = await dioClient.post("https://eksisozluk.com/userrelation/${follow ? 'addrelation' : 'removerelation'}/${author.id}?r=b",
+        options: Options(
+            headers: headers,
+            followRedirects: false,
+            validateStatus: (int status) {
+              print("status code = $status");
+              return status < 500;
+            },
+            contentType:
+                ContentType.parse("application/x-www-form-urlencoded")));
+    return response.statusCode == 200;
   }
 }

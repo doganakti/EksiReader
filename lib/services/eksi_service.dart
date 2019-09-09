@@ -136,6 +136,7 @@ class EksiService {
       Pager pager}) async {
     var result = new Result<Entry>();
     try {
+      
       if (path.contains('/biri/') && author == null) {
         authorPage = EksiUri.getPageFromPath(path) != 0
             ? EksiUri.getPageFromPath(path)

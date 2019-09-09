@@ -2,6 +2,7 @@ import 'package:eksi_reader/models/author.dart';
 import 'package:eksi_reader/models/section.dart';
 import 'package:eksi_reader/services/eksi_service.dart';
 import 'package:eksi_reader/views/entry_list_widget.dart';
+import 'package:eksi_reader/views/modal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -55,9 +56,28 @@ class AuthorWidgetState extends State<AuthorWidget>
           title: Text(author.name, maxLines: 2),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.more_horiz),
+              icon: Icon(Icons.more_vert),
               onPressed: () {
                 print('hey');
+                ModalWidget modalWidget = new ModalWidget();
+                var widgets = new List<Widget>();
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.person_add),
+                  title: Text("yazarı takip et")
+                ));
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.block),
+                  title: Text("yazarı engelle")
+                ));
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.block),
+                  title: Text("başlıklarını engelle")
+                ));
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.report),
+                  title: Text("şikayet et")
+                ));
+                modalWidget.mainButtomSheet(context, widgets);
               },
             ),
             IconButton(

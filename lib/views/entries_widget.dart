@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:share/share.dart';
 
+import 'modal_widget.dart';
+
 class EntriesWidget extends StatefulWidget {
   Topic topic;
   var service = EksiService();
@@ -44,9 +46,29 @@ class EntriesWidgetState extends State<EntriesWidget>
             title: Text(topic.title, maxLines: 2),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.share),
+                icon: Icon(Icons.more_vert),
                 onPressed: () {
-                  Share.share('https://eksisozluk.com${widget.topic.path}');
+                ModalWidget modalWidget = new ModalWidget();
+                var widgets = new List<Widget>();
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.person_add),
+                  title: Text("başlığı takip et")
+                ));
+                widgets.add(new ListTile(
+                  leading: Icon(Icons.share),
+                  title: Text("paylaş"),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Share.share('https://eksisozluk.com${widget.topic.path}');
+                  },
+                ));
+                modalWidget.mainButtomSheet(context, widgets);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.message),
+                onPressed: () {
+                  
                 },
               )
             ],
