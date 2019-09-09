@@ -183,7 +183,6 @@ class EksiService {
           result.pager = Pager(page: page, pageCount: pageCount);
         } catch (e) {
           pager.page = EksiUri.getPageFromPath(path);
-          ;
           result.pager = pager;
         }
       }
