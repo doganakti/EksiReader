@@ -12,6 +12,11 @@
             "login": false
         },
         {
+            "title": "DEBE",
+            "path": "/debe",
+            "login": false
+        },
+        {
             "title": "Takip - Entry",
             "path": "/basliklar/takipentry",
             "login": false
