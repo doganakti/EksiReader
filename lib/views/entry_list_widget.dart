@@ -12,6 +12,7 @@ import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sticky_header_list/sticky_header_list.dart';
 import 'package:sticky_header_list/sticky_row.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,18 +40,18 @@ class EntryListWidgetState extends State<EntryListWidget> {
   EksiService service = EksiService();
   bool loading = true;
   bool noContent = false;
+  bool refreshing = false;
   ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController(initialScrollOffset: -00.0);
-
     loadData(this.widget.path);
   }
 
   @override
   Widget build(BuildContext context) {
+    scrollController = PrimaryScrollController.of(context);
     return RefreshIndicator(
       child: Column(
         children: <Widget>[
@@ -66,6 +67,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
         ],
       ),
       onRefresh: () async {
+        refreshing = true;
         await loadData(widget.path);
       },
     );
@@ -101,10 +103,16 @@ class EntryListWidgetState extends State<EntryListWidget> {
       widget.disambiguation = result.disambiguation;
       if (!path.contains('nick=')) {
         widget.path = result.topic?.path;
-        widget.path = EksiUri.removeFocusToFromPath(widget.path);
+        if (widget.entryList.isNotEmpty) {
+         widget.path = EksiUri.removeFocusToFromPath(widget.path);
+        }
       }
       loading = false;
       noContent = widget.entryList.isEmpty;
+      if (refreshing) {
+        HapticFeedback.lightImpact();
+        refreshing = false;
+      }
     });
   }
 
@@ -141,6 +149,7 @@ class EntryListWidgetState extends State<EntryListWidget> {
     }
     var listView = ListView.separated(
         controller: scrollController,
+        physics: AlwaysScrollableScrollPhysics(),
         separatorBuilder: (context, index) => Divider(
               color: Colors.grey[700],
             ),

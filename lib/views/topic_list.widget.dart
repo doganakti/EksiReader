@@ -8,6 +8,7 @@ import 'package:eksi_reader/views/loading_widget.dart';
 import 'package:eksi_reader/views/pager_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'empty_widget.dart';
 
@@ -86,8 +87,12 @@ class TopicListWidgetState extends State<TopicListWidget> {
       widget.path = path;
       noContent = widget.topicList == null || widget.topicList.length == 0;
       loading = false;
-      refreshing = false;
-      setState(() {});
+      setState(() {
+        if (refreshing) {
+          HapticFeedback.lightImpact();
+          refreshing = false;
+        }
+      });
     }
   }
 
