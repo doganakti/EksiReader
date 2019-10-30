@@ -12,7 +12,7 @@ class AppTheme {
         primarySwatch: Colors.blueGrey,
         accentColor: Colors.deepOrangeAccent,
         scaffoldBackgroundColor: Color(0xff303030),
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -72,7 +72,7 @@ class AppTheme {
         accentColor: Colors.black87,
         scaffoldBackgroundColor: Color(0xfff6f1e6),
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.black, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.black, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -131,7 +131,7 @@ class AppTheme {
       primaryColor: Color(0xfff6f1e6),
       accentColor: Colors.black87,
       scaffoldBackgroundColor: Color(0xfff6f1e6),
-      appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.black, fontWeight: FontWeight.w500))),
+      appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.black, fontWeight: FontWeight.w500))),
     );
     return themeData;
   }
@@ -149,7 +149,7 @@ class AppTheme {
         scaffoldBackgroundColor: Color(0xfff6f1e6),
         
         appBarTheme: AppBarTheme(
-          textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
+          textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.w500))),
         // Define the default Font Family
         fontFamily: fontFamily,
 
@@ -212,7 +212,7 @@ class AppTheme {
         accentColor: Colors.grey[800],
         scaffoldBackgroundColor: Colors.grey[200],
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,
@@ -276,7 +276,7 @@ class AppTheme {
         accentColor: Colors.red,
         scaffoldBackgroundColor: Colors.grey[200],
         
-        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize + 1, color: Colors.white, fontWeight: FontWeight.w500))),
+        appBarTheme: AppBarTheme(textTheme: TextTheme(title: TextStyle(fontSize: fontSize, color: Colors.white, fontWeight: FontWeight.w500))),
 
         // Define the default Font Family
         fontFamily: fontFamily,

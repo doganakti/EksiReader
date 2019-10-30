@@ -15,8 +15,10 @@ class Entry {
   Function(String, String, String) onUrl;
   Topic topic;
   bool liked;
+  ThemeData theme;
 
-  Entry(this.id, this.contentList, this.author, this.date, this.favCount, this.topic);
+  Entry(this.id, this.contentList, this.author, this.date, this.favCount,
+      this.topic);
 
   String resultString() {
     String string = '';
@@ -34,51 +36,54 @@ class Entry {
     return string;
   }
 
+  RichText _resultRichText;
   RichText resultRichText(ThemeData theme) {
-    var textSpanList = new List<TextSpan>();
-    if (topic != null) {
-      var span = TextSpan(
-        text: topic.title + '\n\n',
-        style: theme.textTheme.display3,
-        recognizer: TapGestureRecognizer()..onTap = () {
-              print(topic.path);
-              onUrl(null, topic.path, topic.title);
-            }
-        );
-      textSpanList.add(span);
-    }
-    for (var content in contentList) {
-      if (content.text != null) {
-        var span = TextSpan(text: content.text, style: theme.textTheme.body1);
-        textSpanList.add(span);
-      } else if (content.br == true) {
-        var span = TextSpan(text: '\n', style: theme.textTheme.body1);
-        textSpanList.add(span);
-      } else if (content.linkPath != null) {
+    if (_resultRichText == null) {
+      var textSpanList = new List<TextSpan>();
+      if (topic != null) {
         var span = TextSpan(
-            text: content.linkTitle + '~',
+            text: topic.title + '\n\n',
             style: theme.textTheme.display3,
-            recognizer: TapGestureRecognizer()..onTap = () {
-              print(content.linkPath);
-              onUrl(content.linkPath, null, content.linkTitle);
-            });
-        textSpanList.add(span);
-      } else if (content.innerLinkPath != null) {
-        var span = TextSpan(
-            text: content.innerLinkTitle,
-            style: theme.textTheme.display3,
-            recognizer: TapGestureRecognizer()..onTap = () {
-              print(content.innerLinkPath);
-              onUrl(null, content.innerLinkPath, content.innerLinkTitle);
-            });
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                print(topic.path);
+                onUrl(null, topic.path, topic.title);
+              });
         textSpanList.add(span);
       }
+      for (var content in contentList) {
+        if (content.text != null) {
+          var span = TextSpan(text: content.text, style: theme.textTheme.body1);
+          textSpanList.add(span);
+        } else if (content.br == true) {
+          var span = TextSpan(text: '\n', style: theme.textTheme.body1);
+          textSpanList.add(span);
+        } else if (content.linkPath != null) {
+          var span = TextSpan(
+              text: content.linkTitle + '~',
+              style: theme.textTheme.display3,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  print(content.linkPath);
+                  onUrl(content.linkPath, null, content.linkTitle);
+                });
+          textSpanList.add(span);
+        } else if (content.innerLinkPath != null) {
+          var span = TextSpan(
+              text: content.innerLinkTitle,
+              style: theme.textTheme.display3,
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  print(content.innerLinkPath);
+                  onUrl(null, content.innerLinkPath, content.innerLinkTitle);
+                });
+          textSpanList.add(span);
+        }
+      }
+      _resultRichText = RichText(
+        text: TextSpan(children: textSpanList),
+      );
     }
-    var richText = RichText(
-      text: new TextSpan(
-        children: textSpanList
-      ),
-    );
-    return richText;
+    return _resultRichText;
   }
 }

@@ -31,7 +31,7 @@ class EntryListWidget extends StatefulWidget {
   More more;
   Disambiguation disambiguation;
 
-  EntryListWidget({this.path, this.author, this.section, this.page: 1});
+  EntryListWidget({this.path, this.author, this.section, this.page = 1});
   @override
   EntryListWidgetState createState() => EntryListWidgetState();
 }
@@ -127,18 +127,18 @@ class EntryListWidgetState extends State<EntryListWidget> {
   }
 
   Widget getListViewWithHeader() {
-    var stickyListItems = new List<StickyListRow>();
-    var header = new HeaderRow(child: Container(height: 0));
+    var stickyListItems = List<StickyListRow>();
+    var header = HeaderRow(child: Container(height: 0));
     stickyListItems.add(header);
     for (var entry in widget.entryList) {
       entry.onUrl = handleOnUrl;
       var entryWidget = EntryWidget(
           entry: entry, separator: widget.entryList.last.id != entry.id);
-      var entryRow = new RegularRow(child: entryWidget);
+      var entryRow = RegularRow(child: entryWidget);
       stickyListItems.add(entryRow);
     }
     var headerContainer =
-        new StickyList(children: stickyListItems, controller: scrollController);
+        StickyList(children: stickyListItems, controller: scrollController);
     return headerContainer;
   }
 

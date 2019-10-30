@@ -43,18 +43,19 @@ class EntriesWidgetState extends State<EntriesWidget>
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(55),
           child: AppBar(
+            centerTitle: false,
             title: Text(topic.title, maxLines: 2),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.more_vert),
                 onPressed: () {
-                ModalWidget modalWidget = new ModalWidget();
-                var widgets = new List<Widget>();
-                widgets.add(new ListTile(
+                ModalWidget modalWidget = ModalWidget();
+                var widgets = List<Widget>();
+                widgets.add(ListTile(
                   leading: Icon(Icons.person_add),
                   title: Text("başlığı takip et")
                 ));
-                widgets.add(new ListTile(
+                widgets.add(ListTile(
                   leading: Icon(Icons.share),
                   title: Text("paylaş"),
                   onTap: () {
